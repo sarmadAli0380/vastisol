@@ -69,7 +69,7 @@ export function SiteHeader() {
                     {item.label}
                     <span
                       aria-hidden="true"
-                      className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-accent transition-transform duration-300 ease-out group-hover:scale-x-100"
+                      className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-teal transition-transform duration-300 ease-out group-hover:scale-x-100"
                     />
                   </Link>
                 </motion.li>

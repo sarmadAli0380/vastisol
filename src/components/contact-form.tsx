@@ -7,7 +7,7 @@ import { ArrowRight } from "./primitives";
 type Errors = Partial<Record<"name" | "email" | "company" | "message", string>>;
 
 const fieldBase =
-  "w-full rounded-lg border bg-card px-4 py-3 text-ink placeholder:text-ink-faint transition-colors duration-200 focus:border-accent focus:outline-none";
+  "w-full rounded-lg border bg-card px-4 py-3 text-ink placeholder:text-ink-faint transition-colors duration-200 focus:border-teal focus:outline-none";
 
 export function ContactForm() {
   const uid = useId();
@@ -97,9 +97,9 @@ export function ContactForm() {
     return (
       <div
         role="status"
-        className="rounded-2xl border border-accent/25 bg-accent-soft p-10 text-center"
+        className="edge-light relative overflow-hidden rounded-2xl border border-teal/25 bg-[linear-gradient(150deg,#eef7fa_0%,#dceef5_100%)] p-10 text-center shadow-[0_18px_44px_-24px_rgba(0,52,89,0.35)]"
       >
-        <h2 className="text-3xl text-ink">Thank you — we have it.</h2>
+        <h2 className="gradient-text text-3xl font-semibold">Thank you — we have it.</h2>
         <p className="mt-4 text-ink-muted">
           We&rsquo;ll read your message properly and come back with how we
           would structure the role or team. Expect a reply from a person, not an
@@ -108,7 +108,7 @@ export function ContactForm() {
         <button
           type="button"
           onClick={() => setStatus("idle")}
-          className="mt-7 cursor-pointer text-[0.9375rem] font-medium text-accent underline underline-offset-4"
+          className="mt-7 cursor-pointer text-[0.9375rem] font-medium text-accent-text underline underline-offset-4"
         >
           Send another message
         </button>
@@ -167,9 +167,9 @@ export function ContactForm() {
             return (
               <label
                 key={need}
-                className={`cursor-pointer rounded-full border px-4 py-2.5 text-[0.9375rem] transition-colors duration-200 has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent ${
+                className={`cursor-pointer rounded-full border px-4 py-2.5 text-[0.9375rem] transition-colors duration-200 has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-teal ${
                   selected
-                    ? "border-accent bg-accent text-white"
+                    ? "border-teal bg-teal text-white shadow-[0_2px_8px_-2px_rgba(0,126,167,0.5)]"
                     : "border-rule-strong bg-card text-ink-muted hover:border-ink"
                 }`}
               >
@@ -286,7 +286,7 @@ function Field({
         {label}
         {hint && <span className="ml-2 font-normal text-ink-faint">{hint}</span>}
         {required && (
-          <span aria-hidden="true" className="ml-1 text-accent">
+          <span aria-hidden="true" className="ml-1 text-teal">
             *
           </span>
         )}

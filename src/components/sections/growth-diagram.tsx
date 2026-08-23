@@ -38,8 +38,13 @@ const STAGES = [
  */
 export function GrowthDiagram() {
   return (
-    <figure className="rounded-2xl border border-rule bg-card p-7 shadow-[0_1px_2px_rgba(22,24,27,0.04),0_12px_32px_-16px_rgba(22,24,27,0.12)] sm:p-9">
-      <figcaption className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.18em] text-ink-faint">
+    <figure className="relative overflow-hidden rounded-2xl border border-rule bg-card/85 p-7 shadow-[0_1px_2px_rgba(0,23,31,0.05),0_18px_44px_-20px_rgba(0,52,89,0.28)] backdrop-blur-md sm:p-9">
+      {/* Teal edge-light along the top of the card. */}
+      <span
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal/70 to-transparent"
+      />
+      <figcaption className="font-display text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-accent-text">
         The Vastisol model
       </figcaption>
 
@@ -58,7 +63,7 @@ export function GrowthDiagram() {
                 {Array.from({ length: stage.count }).map((_, i) => (
                   <motion.span
                     key={i}
-                    className="h-3 w-3 rounded-[3px] bg-accent"
+                    className="h-3 w-3 rounded-[3px] bg-teal"
                     initial={{ opacity: 0, scale: 0.4 }}
                     animate={{
                       opacity: 0.35 + 0.65 * (1 - i / stage.count),

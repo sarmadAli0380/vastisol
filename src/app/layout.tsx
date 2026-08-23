@@ -1,28 +1,23 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono, Newsreader } from "next/font/google";
+import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { MotionProvider } from "@/components/motion/provider";
 import { site } from "@/lib/content";
 
-const newsreader = Newsreader({
-  variable: "--font-newsreader",
+// Brand face: headings, navigation, buttons and labels.
+const poppins = Poppins({
+  variable: "--font-poppins",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
+// Long-form body copy, where Inter reads better at small sizes.
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
-  display: "swap",
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-mono-face",
-  subsets: ["latin"],
-  weight: ["400", "500"],
   display: "swap",
 });
 
@@ -51,7 +46,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${newsreader.variable} ${inter.variable} ${jetbrainsMono.variable} h-full`}
+      className={`${poppins.variable} ${inter.variable} h-full`}
     >
       <head>
         {/*
@@ -66,7 +61,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="flex min-h-full flex-col">
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-accent focus:px-5 focus:py-2.5 focus:text-sm focus:font-medium focus:text-white"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-teal focus:px-5 focus:py-2.5 focus:text-sm focus:font-medium focus:text-white"
         >
           Skip to content
         </a>

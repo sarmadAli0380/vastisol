@@ -3,14 +3,19 @@
 import { whyVastisol } from "@/lib/content";
 import { Container, Eyebrow, Index } from "@/components/primitives";
 import { AnimatedText, FadeUp, Stagger, StaggerItem } from "@/components/motion";
+import { AmbientLayer, Glow } from "@/components/ambient";
 
 export function WhyVastisol() {
   return (
     <section
       id="why-vastisol"
-      className="border-b border-rule py-section lg:py-section-lg"
+      className="relative isolate overflow-hidden border-b border-rule py-section lg:py-section-lg"
     >
-      <Container>
+      <AmbientLayer>
+        <Glow />
+      </AmbientLayer>
+
+      <Container className="relative z-10">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-5">
             <div className="lg:sticky lg:top-28">
@@ -20,7 +25,7 @@ export function WhyVastisol() {
               <AnimatedText
                 as="h2"
                 text={whyVastisol.heading}
-                className="mt-7 block text-[2rem] leading-[1.1] sm:text-[2.5rem]"
+                className="mt-7 block text-[1.875rem] font-semibold leading-[1.15] sm:text-[2.25rem]"
                 delay={0.1}
               />
               <FadeUp delay={0.35}>
@@ -35,13 +40,13 @@ export function WhyVastisol() {
                 <StaggerItem
                   as="li"
                   key={item.title}
-                  className="grid grid-cols-[2.5rem_1fr] gap-x-4 border-b border-rule py-8 sm:grid-cols-[4rem_1fr]"
+                  className="group grid grid-cols-[2.5rem_1fr] gap-x-4 border-b border-rule py-8 transition-colors duration-500 hover:border-teal/40 sm:grid-cols-[4rem_1fr]"
                 >
                   <div className="pt-2">
                     <Index n={i + 1} />
                   </div>
                   <div>
-                    <h3 className="text-[1.375rem] leading-snug">
+                    <h3 className="text-[1.375rem] font-semibold leading-snug transition-colors duration-300 group-hover:text-accent-text">
                       {item.title}
                     </h3>
                     <p className="mt-3 text-ink-muted">{item.body}</p>

@@ -89,27 +89,55 @@ provider (Formspree, SendGrid, Postmark).
 Tokens live in the `@theme` block at the top of
 [`src/app/globals.css`](src/app/globals.css).
 
-**Palette** — warm paper, near-black ink, one restrained accent:
+### Palette
+
+The three brand colours, and the neutrals derived from them. Because the brand
+palette is entirely dark, the light surfaces are cool and blue-tinted rather
+than plain grey — that keeps everything on-brand.
 
 | Token | Value | Use |
 |---|---|---|
-| `paper` | `#faf9f6` | Page canvas |
-| `paper-sunk` | `#f3f1ea` | Alternating section bands |
-| `ink` | `#16181b` | Headings |
-| `ink-muted` | `#55585e` | Body copy (6.8:1 on paper) |
-| `rule` | `#e5e2da` | Hairline rules |
-| `accent` | `#16403a` | Deep evergreen (11:1 on paper) |
-| `night` | `#14171a` | Dark bands (Vision, final CTA) |
-| `mint` | `#7fd1be` | Accent on dark (10:1 on night) |
+| `midnight` / `ink` / `night` | `#00171f` | Headings, dark bands |
+| `navy` / `accent-text` | `#003459` | Accent text, eyebrows, gradient end |
+| `teal` / `accent` | `#007ea7` | CTAs, graphics, highlights |
+| `paper` | `#f4f8fa` | Page canvas |
+| `paper-sunk` | `#e8f0f4` | Alternating section bands |
+| `ink-muted` | `#4a5d68` | Body copy (6.4:1 on paper) |
+| `rule` | `#d3e2ea` | Hairline rules |
+| `sky` | `#56c5e8` | Accent on dark (9.2:1 on night) |
+| `night-muted` | `#9fb6c2` | Body copy on dark (8.7:1) |
 
-**Type** — Newsreader (editorial serif) for headings, Inter for body and UI,
-JetBrains Mono for the small uppercase section labels and index numbers.
+**Contrast note:** `#007ea7` sits at 4.3:1 on paper — fine for large text,
+buttons and graphics, but *not* body-size text. Use `accent-text` (`#003459`,
+12:1) whenever accent-coloured text needs to meet 4.5:1. The variants are
+already split this way in the tokens, so reach for `text-accent-text` on copy
+and `bg-teal` / `text-teal` on UI.
+
+### Gradient utilities
+
+| Class | What it does |
+|---|---|
+| `.gradient-text` | Teal → navy sweep on headings (near-horizontal so multi-line headings colour evenly) |
+| `.gradient-text-dark` | White → sky, for headings on the dark bands |
+| `.gradient-night` | Layered radial + linear navy field used by the dark sections |
+| `.edge-light` | Thin teal light along a card's top edge |
+| `.rule-fade` | Hairline that fades out at both ends |
+
+Primary buttons use a teal → navy gradient that slides on hover.
+
+### Type
+
+**Poppins** carries the brand voice — wordmark, navigation, all headings,
+buttons and small uppercase labels. **Inter** handles long-form body copy,
+where it reads better at small sizes.
 
 ---
 
 ## Motion
 
-Primitives live in [`src/components/motion/index.tsx`](src/components/motion/index.tsx):
+### Content motion
+
+Primitives in [`src/components/motion/index.tsx`](src/components/motion/index.tsx):
 
 - `<FadeUp>` — fade and rise, the workhorse for section blocks
 - `<Stagger>` / `<StaggerItem>` — sequenced list and grid entrances
@@ -118,10 +146,34 @@ Primitives live in [`src/components/motion/index.tsx`](src/components/motion/ind
 House easing is `[0.16, 1, 0.3, 1]` — a long, soft decelerate. Everything
 animates once on entry; nothing loops.
 
-**Reduced motion** is handled in three places: `<MotionConfig reducedMotion="user">`
-in the root layout strips transforms globally, each primitive additionally
-collapses to a plain fade, and a `prefers-reduced-motion` block in `globals.css`
-covers the CSS-only transitions. Nothing relies on movement to become readable.
+### Ambient background motion
+
+Components in [`src/components/ambient/`](src/components/ambient):
+
+- `<Constellation>` — drifting clusters of connected nodes. The motif is
+  deliberate: nodes joined into groups is what Vastisol sells. Each cluster is
+  a single `<g>` that drifts and rotates as a unit, so the connecting lines stay
+  attached with no per-frame JavaScript.
+- `<Glow>` — blurred brand-coloured blobs on opposing drift cycles
+- `<DotGrid>` — slowly panning dot grid, radially masked at the edges
+- `<AmbientLayer>` — wrapper that holds these behind content, inert to pointers
+  and screen readers
+
+All of it animates on `transform` and `opacity` only, so it stays on the
+compositor and never triggers layout. Node coordinates are hand-authored
+constants — never `Math.random()` — so server and client markup match.
+
+To make the background more or less prominent, adjust `lineOpacity` and
+`nodeOpacity` in `constellation.tsx`, or the `opacity-*` class passed at each
+call site.
+
+### Reduced motion
+
+Handled in three places: `<MotionConfig reducedMotion="user">` in the root
+layout strips transforms globally, each motion primitive additionally collapses
+to a plain fade, and a `prefers-reduced-motion` block in `globals.css` switches
+off every CSS animation — including all the ambient drift. Nothing relies on
+movement to become readable.
 
 ---
 

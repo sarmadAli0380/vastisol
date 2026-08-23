@@ -3,16 +3,22 @@
 import { finalCta, site } from "@/lib/content";
 import { ArrowRight, ButtonLink, Container } from "@/components/primitives";
 import { AnimatedText, FadeUp } from "@/components/motion";
+import { AmbientLayer, Constellation, Glow } from "@/components/ambient";
 
 export function FinalCta() {
   return (
-    <section className="border-t border-night-rule bg-night py-24 lg:py-32">
-      <Container>
+    <section className="gradient-night relative isolate overflow-hidden border-t border-night-rule py-24 lg:py-32">
+      <AmbientLayer>
+        <Glow onDark />
+        <Constellation onDark className="opacity-50" />
+      </AmbientLayer>
+
+      <Container className="relative z-10">
         <div className="mx-auto max-w-3xl text-center">
           <AnimatedText
             as="h2"
             text={finalCta.heading}
-            className="block text-[2.5rem] leading-[1.06] text-white sm:text-6xl"
+            className="gradient-text-dark block text-[2.5rem] font-semibold leading-[1.08] sm:text-6xl"
             each={0.07}
           />
 
@@ -34,7 +40,7 @@ export function FinalCta() {
               </ButtonLink>
               <a
                 href={`mailto:${site.email}`}
-                className="text-[0.9375rem] text-night-muted underline decoration-night-rule underline-offset-4 transition-colors duration-200 hover:text-mint hover:decoration-mint"
+                className="text-[0.9375rem] text-night-muted underline decoration-night-rule underline-offset-4 transition-colors duration-200 hover:text-sky hover:decoration-sky"
               >
                 or email us directly
               </a>
