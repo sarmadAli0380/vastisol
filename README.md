@@ -141,10 +141,24 @@ Primitives in [`src/components/motion/index.tsx`](src/components/motion/index.ts
 
 - `<FadeUp>` — fade and rise, the workhorse for section blocks
 - `<Stagger>` / `<StaggerItem>` — sequenced list and grid entrances
-- `<AnimatedText>` — word-by-word masked rise for headings
+- `<AnimatedText>` — word-by-word fade and rise for headings
 
 House easing is `[0.16, 1, 0.3, 1]` — a long, soft decelerate. Everything
 animates once on entry; nothing loops.
+
+Two rules keep entrances from feeling late, both in `motion/index.tsx`:
+
+- `VIEWPORT.margin` has a **positive** bottom value, which grows the detection
+  box past the fold so a block starts animating just before you reach it. A
+  negative margin does the opposite — you arrive at blank space and watch it
+  fill in.
+- `MAX_STAGGER` caps total word-stagger per heading. Without it, stagger time
+  scales with word count and a long heading is still assembling while you read
+  it. Only the gap between words tightens; the cap holds.
+
+`AnimatedText` fades words rather than clipping them behind a mask, on purpose:
+with a mask each word is genuinely absent until its turn, so a heading you are
+already looking at appears to still be loading.
 
 ### Ambient background motion
 

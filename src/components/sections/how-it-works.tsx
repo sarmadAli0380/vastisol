@@ -30,17 +30,17 @@ export function HowItWorks() {
             as="h2"
             text={howItWorks.heading}
             className="mt-7 block text-[2rem] font-semibold leading-[1.12] sm:text-[2.5rem] lg:text-[3rem]"
-            delay={0.1}
+            delay={0.05}
           />
-          <FadeUp delay={0.4}>
+          <FadeUp delay={0.05}>
             <p className="lead mt-7 text-ink-muted">{howItWorks.lead}</p>
           </FadeUp>
         </div>
 
         <Stagger
           as="ol"
-          delay={0.2}
-          each={0.11}
+          delay={0.05}
+          each={0.04}
           className="mt-16 grid gap-px overflow-hidden rounded-2xl bg-gradient-to-br from-teal/25 via-rule to-navy/20 shadow-[0_24px_60px_-32px_rgba(0,52,89,0.45)] sm:grid-cols-2 lg:grid-cols-5"
         >
           {howItWorks.steps.map((step, i) => (

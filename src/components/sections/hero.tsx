@@ -33,21 +33,21 @@ export function Hero() {
                 as="span"
                 text={hero.heading[0]}
                 className="block"
-                delay={0.15}
+                delay={0.05}
               />
               <AnimatedText
                 as="span"
                 text={hero.heading[1]}
                 className="gradient-text block"
-                delay={0.32}
+                delay={0.16}
               />
             </h1>
 
-            <FadeUp delay={0.55} duration={0.8}>
+            <FadeUp delay={0.26} duration={0.8}>
               <p className="lead mt-8 max-w-xl text-ink-muted">{hero.body}</p>
             </FadeUp>
 
-            <FadeUp delay={0.7} duration={0.8}>
+            <FadeUp delay={0.34} duration={0.8}>
               <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
                 <ButtonLink href={hero.primaryCta.href} className="group">
                   {hero.primaryCta.label}
@@ -76,8 +76,8 @@ export function Hero() {
         <Container>
           <Stagger
             as="ul"
-            delay={0.9}
-            each={0.07}
+            delay={0.22}
+            each={0.04}
             className="grid grid-cols-1 divide-y divide-rule lg:grid-cols-5 lg:divide-x lg:divide-y-0"
           >
             {functionStrip.map((label) => (

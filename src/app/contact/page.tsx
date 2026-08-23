@@ -30,22 +30,22 @@ export default function ContactPage() {
               as="h1"
               text={contactPage.heading}
               className="gradient-text mt-7 block text-[2.5rem] font-semibold leading-[1.08] sm:text-5xl lg:text-[3.5rem]"
-              delay={0.1}
-              each={0.06}
+              delay={0.05}
+              each={0.04}
             />
 
-            <FadeUp delay={0.3}>
+            <FadeUp delay={0.15}>
               <p className="lead mt-7 max-w-xl text-ink-muted">
                 {contactPage.lead}
               </p>
             </FadeUp>
 
-            <FadeUp delay={0.12} className="mt-12">
+            <FadeUp delay={0.06} className="mt-12">
               <ContactForm />
             </FadeUp>
           </div>
 
-          <FadeUp delay={0.2} className="lg:col-span-4 lg:col-start-9">
+          <FadeUp delay={0.05} className="lg:col-span-4 lg:col-start-9">
             <div className="lg:sticky lg:top-28">
               <h2 className="font-display text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-ink-faint">
                 {contactPage.asideTitle}

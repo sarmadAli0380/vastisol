@@ -27,17 +27,17 @@ export function Problem() {
                 as="h2"
                 text={problem.heading}
                 className="mt-7 block text-[1.875rem] font-semibold leading-[1.15] sm:text-[2.25rem] lg:text-[2.5rem]"
-                delay={0.1}
+                delay={0.05}
               />
 
-              <FadeUp delay={0.35}>
+              <FadeUp delay={0.06}>
                 <p className="lead mt-7 text-ink-muted">{problem.lead}</p>
               </FadeUp>
             </div>
           </div>
 
           <div className="lg:col-span-7">
-            <Stagger as="ul" each={0.1} className="border-t border-rule">
+            <Stagger as="ul" each={0.05} className="border-t border-rule">
               {problem.items.map((item, i) => (
                 <StaggerItem
                   as="li"
@@ -55,7 +55,7 @@ export function Problem() {
               ))}
             </Stagger>
 
-            <FadeUp delay={0.15}>
+            <FadeUp delay={0.05}>
               <p className="gradient-text mt-8 font-display text-2xl font-semibold tracking-[-0.025em]">
                 {problem.closing}
               </p>

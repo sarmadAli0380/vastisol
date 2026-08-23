@@ -23,7 +23,27 @@ import { Fragment, type ReactNode } from "react";
 
 export const EASE = [0.16, 1, 0.3, 1] as const;
 
-const VIEWPORT = { once: true, amount: 0.2, margin: "0px 0px -10% 0px" } as const;
+/**
+ * Trigger point for entrance animations.
+ *
+ * The positive bottom margin grows the detection box *past* the fold, so a
+ * block starts animating shortly before it scrolls into view and is already
+ * settled by the time you're reading it. A negative margin (or a high
+ * `amount`) does the opposite: you arrive at a blank space and then watch it
+ * fill in, which is what made these feel late.
+ */
+const VIEWPORT = { once: true, amount: 0.1, margin: "0px 0px 25% 0px" } as const;
+
+/**
+ * Ceiling on how long a heading's word stagger may last in total.
+ *
+ * Without this, stagger time scales with word count — a sixteen-word heading
+ * spent ~0.5s rippling before the last word even started, so you could be
+ * reading it while it was still assembling. Capping the total keeps a long
+ * heading as quick to settle as a short one; only the gap between words
+ * tightens.
+ */
+const MAX_STAGGER = 0.24;
 
 export type MotionTag =
   | "div"
@@ -79,7 +99,7 @@ export function FadeUp({
   as = "div",
   delay = 0,
   y = 18,
-  duration = 0.7,
+  duration = 0.5,
   className,
 }: {
   children: ReactNode;
@@ -113,7 +133,7 @@ export function Stagger({
   children,
   as = "div",
   delay = 0,
-  each = 0.08,
+  each = 0.05,
   className,
 }: {
   children: ReactNode;
@@ -154,7 +174,7 @@ export function StaggerItem({
 
   const variants: Variants = {
     hidden: { opacity: 0, y: reduce ? 0 : y },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: EASE } },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: EASE } },
   };
 
   return (
@@ -165,25 +185,30 @@ export function StaggerItem({
 }
 
 const WORD_VARIANTS: Variants = {
-  hidden: { y: "110%" },
-  visible: { y: "0%", transition: { duration: 0.9, ease: EASE } },
+  hidden: { opacity: 0, y: "0.3em" },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: EASE } },
 };
 
 /**
- * Word-by-word rise, each word masked by its own clipping box so the line
- * appears to lift off the baseline. Used on the hero and section headings.
+ * Word-by-word fade and rise across a heading.
+ *
+ * Deliberately a fade rather than a clipped mask-reveal. With a mask each word
+ * is genuinely absent until its turn arrives, so a heading you are already
+ * looking at appears to be still loading. Fading means every word is legible
+ * for the whole transition and the line only firms up — which reads as smooth
+ * instead of late.
  *
  * Splitting on words rather than characters keeps text selectable, leaves
  * natural line wrapping intact, and reads as a single gesture instead of a
- * typewriter effect. The full string is exposed via aria-label with the
- * word spans hidden, so assistive tech reads it as one phrase.
+ * typewriter effect. The full string is exposed via aria-label with the word
+ * spans hidden, so assistive tech reads it as one phrase.
  */
 export function AnimatedText({
   text,
   className,
   as = "span",
   delay = 0,
-  each = 0.045,
+  each = 0.03,
 }: {
   text: string;
   className?: string;
@@ -209,6 +234,7 @@ export function AnimatedText({
   }
 
   const words = text.split(" ");
+  const step = Math.min(each, MAX_STAGGER / Math.max(words.length - 1, 1));
 
   return (
     <Tagged
@@ -219,24 +245,22 @@ export function AnimatedText({
       viewport={VIEWPORT}
       variants={{
         hidden: {},
-        visible: { transition: { staggerChildren: each, delayChildren: delay } },
+        visible: { transition: { staggerChildren: step, delayChildren: delay } },
       }}
       aria-label={text}
     >
       {words.map((word, i) => (
-        // The separating space sits OUTSIDE the mask as its own text node.
-        // Inside an inline-block it would be collapsed away, running the
+        // The separating space sits OUTSIDE the animated span as its own text
+        // node. Inside an inline-block it would be collapsed away, running the
         // words together; outside, it also stays a valid line-break point.
         <Fragment key={`${word}-${i}`}>
-          <span
+          <motion.span
             aria-hidden="true"
-            // Vertical padding stops descenders (g, y, p) being clipped by the mask.
-            className="inline-block overflow-hidden py-[0.08em] align-bottom"
+            className="inline-block"
+            variants={WORD_VARIANTS}
           >
-            <motion.span className="inline-block" variants={WORD_VARIANTS}>
-              {word}
-            </motion.span>
-          </span>
+            {word}
+          </motion.span>
           {i < words.length - 1 ? " " : null}
         </Fragment>
       ))}

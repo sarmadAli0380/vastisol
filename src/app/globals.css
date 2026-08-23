@@ -136,7 +136,23 @@
 
   /* Teal-to-navy gradient for emphasis words in headings.
      Near-horizontal so multi-line headings sweep evenly on every line
-     rather than colouring only the first word. */
+     rather than colouring only the first word.
+
+     `display: inline-block` is load-bearing, not cosmetic. These headings
+     contain inline-block word spans (the reveal masks). If the gradient
+     element is left as a plain inline box it fragments across lines, and a
+     fragmented inline cannot clip its background through inline-block
+     descendants — the text then paints fully transparent: invisible, but
+     still selectable. Any single unfragmented box fixes it, so callers may
+     override with `block`, but never with `inline`. */
+  .gradient-text,
+  .gradient-text-dark {
+    display: inline-block;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
   .gradient-text {
     background-image: linear-gradient(
       95deg,
@@ -144,9 +160,6 @@
       #005f85 45%,
       var(--color-navy) 100%
     );
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
   }
 
   /* Lighter variant for use on the dark bands */
@@ -157,9 +170,18 @@
       #b8e4f4 50%,
       var(--color-sky) 100%
     );
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+  }
+
+  /* Safety net: if a gradient heading ever ends up in a context where the
+     clip cannot paint, fall back to a solid brand colour rather than
+     invisible text. Browsers that support background-clip re-hide this. */
+  @supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+    .gradient-text {
+      color: var(--color-navy);
+    }
+    .gradient-text-dark {
+      color: #ffffff;
+    }
   }
 
   /* Deep brand gradient for the dark sections */

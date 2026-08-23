@@ -4,9 +4,12 @@ import { motion } from "@/components/motion";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-const DOT_STEP = 0.035; // gap between dots within a stage
-const STAGE_GAP = 0.25; // pause between stages
-const START = 0.55; // waits for the hero headline to finish
+// Kept tight on purpose: the full three-stage build finishes in well under a
+// second. Earlier values ran past 2.4s, which read as the page being slow
+// rather than as a considered animation.
+const DOT_STEP = 0.018; // gap between dots within a stage
+const STAGE_GAP = 0.12; // pause between stages
+const START = 0.28; // lets the hero headline get moving first
 
 /**
  * Start times are resolved once at module load so each stage waits for the
@@ -70,7 +73,7 @@ export function GrowthDiagram() {
                       scale: 1,
                     }}
                     transition={{
-                      duration: 0.5,
+                      duration: 0.38,
                       delay: stageStart + i * DOT_STEP,
                       ease: EASE,
                     }}
@@ -82,7 +85,7 @@ export function GrowthDiagram() {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
-                  duration: 0.6,
+                  duration: 0.42,
                   delay: labelAt,
                   ease: EASE,
                 }}
@@ -100,7 +103,7 @@ export function GrowthDiagram() {
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
                   transition={{
-                    duration: 0.7,
+                    duration: 0.5,
                     delay: labelAt + 0.1,
                     ease: EASE,
                   }}

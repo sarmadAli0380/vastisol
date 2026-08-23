@@ -19,16 +19,16 @@ export function FinalCta() {
             as="h2"
             text={finalCta.heading}
             className="gradient-text-dark block text-[2.5rem] font-semibold leading-[1.08] sm:text-6xl"
-            each={0.07}
+            each={0.04}
           />
 
-          <FadeUp delay={0.3}>
+          <FadeUp delay={0.15}>
             <p className="lead mx-auto mt-7 max-w-2xl text-night-muted">
               {finalCta.body}
             </p>
           </FadeUp>
 
-          <FadeUp delay={0.45}>
+          <FadeUp delay={0.22}>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <ButtonLink
                 href={finalCta.cta.href}

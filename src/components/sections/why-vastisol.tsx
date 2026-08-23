@@ -26,16 +26,16 @@ export function WhyVastisol() {
                 as="h2"
                 text={whyVastisol.heading}
                 className="mt-7 block text-[1.875rem] font-semibold leading-[1.15] sm:text-[2.25rem]"
-                delay={0.1}
+                delay={0.05}
               />
-              <FadeUp delay={0.35}>
+              <FadeUp delay={0.06}>
                 <p className="lead mt-6 text-ink-muted">{whyVastisol.lead}</p>
               </FadeUp>
             </div>
           </div>
 
           <div className="lg:col-span-6 lg:col-start-7">
-            <Stagger as="ul" each={0.1} className="border-t border-rule-strong">
+            <Stagger as="ul" each={0.05} className="border-t border-rule-strong">
               {whyVastisol.items.map((item, i) => (
                 <StaggerItem
                   as="li"

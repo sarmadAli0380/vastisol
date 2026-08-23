@@ -29,14 +29,14 @@ export function Vision() {
               as="h2"
               text={vision.heading}
               className="gradient-text-dark mt-7 block text-[1.875rem] font-semibold leading-[1.22] sm:text-[2.375rem] lg:text-[2.75rem]"
-              delay={0.1}
-              each={0.035}
+              delay={0.05}
+              each={0.022}
             />
           </div>
 
           <div className="space-y-5 self-end lg:col-span-5">
             {vision.paragraphs.map((p, i) => (
-              <FadeUp as="p" key={i} delay={0.4 + i * 0.12}>
+              <FadeUp as="p" key={i} delay={0.2 + i * 0.07}>
                 {p}
               </FadeUp>
             ))}
@@ -45,7 +45,7 @@ export function Vision() {
 
         <Stagger
           as="ol"
-          each={0.13}
+          each={0.04}
           className="mt-20 grid gap-px overflow-hidden rounded-2xl bg-gradient-to-br from-sky/30 via-night-rule to-teal/25 md:grid-cols-3"
         >
           {vision.progression.map((stage, i) => (
