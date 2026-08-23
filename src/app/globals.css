@@ -1,26 +1,137 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ============================================================
+   Vastisol design tokens
+   Light editorial B2B: warm paper, ink, one restrained accent.
+   ============================================================ */
+
+@theme {
+  /* Surfaces */
+  --color-paper: #faf9f6; /* page canvas — warm off-white */
+  --color-paper-sunk: #f3f1ea; /* recessed bands */
+  --color-card: #ffffff;
+
+  /* Ink */
+  --color-ink: #16181b; /* headings, primary text */
+  --color-ink-muted: #55585e; /* body copy — 6.8:1 on paper */
+  --color-ink-faint: #8a8d93; /* captions, meta — decorative only */
+
+  /* Structure */
+  --color-rule: #e5e2da; /* hairline rules */
+  --color-rule-strong: #d3cfc4;
+
+  /* Accent — deep evergreen. 11:1 on paper. */
+  --color-accent: #16403a;
+  --color-accent-hover: #0f2f2a;
+  --color-accent-soft: #e7efec;
+
+  /* Form validation */
+  --color-destructive: #b3261e;
+
+  /* Dark band */
+  --color-night: #14171a;
+  --color-night-raised: #1d2125;
+  --color-night-rule: #2c3238;
+  --color-night-muted: #a8adb4; /* 8:1 on night */
+  --color-mint: #7fd1be; /* accent on dark — 10:1 on night */
+
+  /* Type */
+  --font-display: var(--font-newsreader), ui-serif, Georgia, serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-face), ui-monospace, monospace;
+
+  /* Spacious rhythm (density 3/10) */
+  --spacing-section: 7rem;
+  --spacing-section-lg: 10rem;
+
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink-muted);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3 {
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  /* Anchor targets clear the sticky header */
+  :where(section[id]) {
+    scroll-margin-top: 5.5rem;
+  }
+
+  /* One visible focus treatment everywhere */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: #fff;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* Small uppercase mono label used as a section eyebrow */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  .eyebrow-on-dark {
+    color: var(--color-mint);
+  }
+
+  /* Lead paragraph under a section heading */
+  .lead {
+    font-size: 1.125rem;
+    line-height: 1.65;
+    text-wrap: pretty;
+  }
+
+  @media (min-width: 768px) {
+    .lead {
+      font-size: 1.25rem;
+    }
+  }
+}
+
+/* Scroll-triggered motion is handled by components in src/components/motion.
+   This block covers everything driven by plain CSS transitions instead. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

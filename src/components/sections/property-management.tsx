@@ -1,0 +1,77 @@
+"use client";
+
+import { propertyManagement as pm } from "@/lib/content";
+import { Container, Eyebrow } from "@/components/primitives";
+import {
+  AnimatedText,
+  FadeUp,
+  Stagger,
+  StaggerItem,
+} from "@/components/motion";
+
+export function PropertyManagement() {
+  return (
+    <section
+      id="property-management"
+      className="border-b border-rule py-section lg:py-section-lg"
+    >
+      <Container>
+        <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-7">
+            <FadeUp duration={0.6}>
+              <Eyebrow>{pm.eyebrow}</Eyebrow>
+            </FadeUp>
+
+            <h2 className="mt-7 text-[2rem] leading-[1.12] sm:text-[2.5rem] lg:text-[3rem]">
+              <AnimatedText as="span" text={pm.heading[0]} delay={0.1} />{" "}
+              <AnimatedText
+                as="span"
+                text={pm.heading[1]}
+                className="italic text-accent"
+                delay={0.35}
+              />
+            </h2>
+
+            <div className="mt-9 max-w-2xl space-y-5">
+              {pm.paragraphs.map((p, i) => (
+                <FadeUp
+                  as="p"
+                  key={i}
+                  delay={0.5 + i * 0.1}
+                  className="text-ink-muted"
+                >
+                  {p}
+                </FadeUp>
+              ))}
+            </div>
+          </div>
+
+          <FadeUp delay={0.25} className="lg:col-span-5">
+            <div className="rounded-2xl border border-rule bg-accent-soft p-8 lg:sticky lg:top-28">
+              <h3 className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.18em] text-accent">
+                {pm.capabilitiesLabel}
+              </h3>
+              <Stagger
+                as="ul"
+                delay={0.3}
+                each={0.06}
+                className="mt-6 divide-y divide-accent/15"
+              >
+                {pm.capabilities.map((c) => (
+                  <StaggerItem
+                    as="li"
+                    key={c}
+                    y={8}
+                    className="py-3 text-[0.9375rem] text-ink first:pt-0 last:pb-0"
+                  >
+                    {c}
+                  </StaggerItem>
+                ))}
+              </Stagger>
+            </div>
+          </FadeUp>
+        </div>
+      </Container>
+    </section>
+  );
+}

@@ -1,0 +1,116 @@
+"use client";
+
+import { motion } from "@/components/motion";
+
+const EASE = [0.16, 1, 0.3, 1] as const;
+
+const DOT_STEP = 0.035; // gap between dots within a stage
+const STAGE_GAP = 0.25; // pause between stages
+const START = 0.55; // waits for the hero headline to finish
+
+/**
+ * Start times are resolved once at module load so each stage waits for the
+ * previous one's dots to land — computing them during render would mean
+ * mutating state mid-render.
+ */
+const STAGES = [
+  { count: 1, cols: 1, label: "One person", note: "A single embedded team member" },
+  { count: 5, cols: 5, label: "A team", note: "Shared processes and standards" },
+  {
+    count: 20,
+    cols: 5,
+    label: "An entire function",
+    note: "A complete outsourced department",
+  },
+].map((stage, i, all) => ({
+  ...stage,
+  startAt:
+    START +
+    all
+      .slice(0, i)
+      .reduce((total, s) => total + s.count * DOT_STEP + STAGE_GAP, 0),
+}));
+
+/**
+ * States the Vastisol model visually: one person → a team → a function.
+ * The dots build in sequence so the diagram performs the idea it describes.
+ * Purely diagrammatic — it asserts no numbers about the business itself.
+ */
+export function GrowthDiagram() {
+  return (
+    <figure className="rounded-2xl border border-rule bg-card p-7 shadow-[0_1px_2px_rgba(22,24,27,0.04),0_12px_32px_-16px_rgba(22,24,27,0.12)] sm:p-9">
+      <figcaption className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.18em] text-ink-faint">
+        The Vastisol model
+      </figcaption>
+
+      <div className="mt-7 space-y-7">
+        {STAGES.map((stage, stageIndex) => {
+          const stageStart = stage.startAt;
+          const labelAt = stageStart + stage.count * DOT_STEP;
+
+          return (
+            <div key={stage.label}>
+              <div
+                aria-hidden="true"
+                className="grid w-fit gap-1.5"
+                style={{ gridTemplateColumns: `repeat(${stage.cols}, 0.75rem)` }}
+              >
+                {Array.from({ length: stage.count }).map((_, i) => (
+                  <motion.span
+                    key={i}
+                    className="h-3 w-3 rounded-[3px] bg-accent"
+                    initial={{ opacity: 0, scale: 0.4 }}
+                    animate={{
+                      opacity: 0.35 + 0.65 * (1 - i / stage.count),
+                      scale: 1,
+                    }}
+                    transition={{
+                      duration: 0.5,
+                      delay: stageStart + i * DOT_STEP,
+                      ease: EASE,
+                    }}
+                  />
+                ))}
+              </div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.6,
+                  delay: labelAt,
+                  ease: EASE,
+                }}
+              >
+                <p className="mt-4 text-[0.9375rem] font-medium text-ink">
+                  {stage.label}
+                </p>
+                <p className="mt-0.5 text-sm text-ink-muted">{stage.note}</p>
+              </motion.div>
+
+              {stageIndex < STAGES.length - 1 && (
+                <motion.div
+                  aria-hidden="true"
+                  className="mt-6 h-px w-full origin-left bg-rule"
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{
+                    duration: 0.7,
+                    delay: labelAt + 0.1,
+                    ease: EASE,
+                  }}
+                />
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      <p className="sr-only">
+        Diagram: a Vastisol relationship can begin with one embedded team
+        member, grow into a dedicated team working to shared processes, and
+        expand into a complete outsourced business function.
+      </p>
+    </figure>
+  );
+}

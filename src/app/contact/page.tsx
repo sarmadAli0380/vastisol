@@ -1,0 +1,77 @@
+import type { Metadata } from "next";
+import { ContactForm } from "@/components/contact-form";
+import { Container, Eyebrow, Index } from "@/components/primitives";
+import { AnimatedText, FadeUp } from "@/components/motion";
+import { contactPage, site } from "@/lib/content";
+
+export const metadata: Metadata = {
+  title: "Let's Build Your Team",
+  description:
+    "Tell Vastisol what's slowing your operation down — the function, the volume, the tools you use — and we'll come back with how we would staff and run it.",
+};
+
+export default function ContactPage() {
+  return (
+    <section className="border-b border-rule py-16 lg:py-24">
+      <Container>
+        <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-7">
+            <FadeUp duration={0.6}>
+              <Eyebrow>{contactPage.eyebrow}</Eyebrow>
+            </FadeUp>
+
+            <AnimatedText
+              as="h1"
+              text={contactPage.heading}
+              className="mt-7 block text-[2.5rem] leading-[1.06] sm:text-5xl lg:text-[3.5rem]"
+              delay={0.1}
+              each={0.06}
+            />
+
+            <FadeUp delay={0.3}>
+              <p className="lead mt-7 max-w-xl text-ink-muted">
+                {contactPage.lead}
+              </p>
+            </FadeUp>
+
+            <FadeUp delay={0.12} className="mt-12">
+              <ContactForm />
+            </FadeUp>
+          </div>
+
+          <FadeUp delay={0.2} className="lg:col-span-4 lg:col-start-9">
+            <div className="lg:sticky lg:top-28">
+              <h2 className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.18em] text-ink-faint">
+                {contactPage.asideTitle}
+              </h2>
+
+              <ol className="mt-7 border-t border-rule">
+                {contactPage.aside.map((item, i) => (
+                  <li key={item.title} className="border-b border-rule py-6">
+                    <Index n={i + 1} />
+                    <h3 className="mt-3 text-lg leading-snug">{item.title}</h3>
+                    <p className="mt-2 text-[0.9375rem] leading-relaxed text-ink-muted">
+                      {item.body}
+                    </p>
+                  </li>
+                ))}
+              </ol>
+
+              <div className="mt-8">
+                <p className="text-[0.9375rem] text-ink-muted">
+                  Prefer email?
+                </p>
+                <a
+                  href={`mailto:${site.email}`}
+                  className="mt-1 inline-block border-b border-rule-strong pb-0.5 text-[0.9375rem] text-ink transition-colors duration-200 hover:border-accent hover:text-accent"
+                >
+                  {site.email}
+                </a>
+              </div>
+            </div>
+          </FadeUp>
+        </div>
+      </Container>
+    </section>
+  );
+}
