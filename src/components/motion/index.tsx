@@ -11,9 +11,14 @@ import { Fragment, type ReactNode } from "react";
 /**
  * Motion primitives.
  *
- * House easing is a long, soft decelerate — content settles rather than
- * bounces, which suits an editorial B2B tone. Everything animates once on
- * entry; nothing loops or demands attention.
+ * The whole system is tuned for calm: one gentle curve, durations around a
+ * second, and generous overlap between neighbouring elements so a section
+ * arrives as a single slow wash rather than a series of separate arrivals.
+ * Everything animates once on entry; nothing loops or demands attention.
+ *
+ * Three values control the feel. Change these rather than individual call
+ * sites: EASE (the curve), the durations below, and MAX_STAGGER (how much of
+ * a cascade a heading is allowed).
  *
  * Reduced motion is honoured twice over: <MotionConfig reducedMotion="user">
  * in the root layout strips transforms globally, and each primitive
@@ -21,7 +26,16 @@ import { Fragment, type ReactNode } from "react";
  * become readable.
  */
 
-export const EASE = [0.16, 1, 0.3, 1] as const;
+/**
+ * House easing — a gentle cubic ease-out.
+ *
+ * This was previously an exponential ease-out, [0.16, 1, 0.3, 1], which covers
+ * roughly 60% of its distance in the first 15% of its duration. Each element
+ * snapped into place and then sat still, which reads as popping no matter how
+ * long the duration is. A cubic curve distributes the movement evenly, so
+ * things glide and settle instead.
+ */
+export const EASE = [0.215, 0.61, 0.355, 1] as const;
 
 /**
  * Trigger point for entrance animations.
@@ -37,13 +51,16 @@ const VIEWPORT = { once: true, amount: 0.1, margin: "0px 0px 25% 0px" } as const
 /**
  * Ceiling on how long a heading's word stagger may last in total.
  *
- * Without this, stagger time scales with word count — a sixteen-word heading
- * spent ~0.5s rippling before the last word even started, so you could be
- * reading it while it was still assembling. Capping the total keeps a long
- * heading as quick to settle as a short one; only the gap between words
- * tightens.
+ * Without a cap, stagger time scales with word count and a long heading is
+ * still assembling while you read it. The cap tightens the gap between words
+ * instead of extending the sequence.
+ *
+ * This is generous relative to word duration on purpose: because each word
+ * takes far longer to animate than the gap between words, many words are
+ * always in flight at once. That overlap is what makes the line read as one
+ * continuous wash rather than a series of individual arrivals.
  */
-const MAX_STAGGER = 0.24;
+const MAX_STAGGER = 0.55;
 
 export type MotionTag =
   | "div"
@@ -98,8 +115,8 @@ export function FadeUp({
   children,
   as = "div",
   delay = 0,
-  y = 18,
-  duration = 0.5,
+  y = 24,
+  duration = 0.95,
   className,
 }: {
   children: ReactNode;
@@ -133,7 +150,7 @@ export function Stagger({
   children,
   as = "div",
   delay = 0,
-  each = 0.05,
+  each = 0.1,
   className,
 }: {
   children: ReactNode;
@@ -162,7 +179,7 @@ export function Stagger({
 export function StaggerItem({
   children,
   as = "div",
-  y = 16,
+  y = 22,
   className,
 }: {
   children: ReactNode;
@@ -174,7 +191,7 @@ export function StaggerItem({
 
   const variants: Variants = {
     hidden: { opacity: 0, y: reduce ? 0 : y },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: EASE } },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.9, ease: EASE } },
   };
 
   return (
@@ -185,8 +202,8 @@ export function StaggerItem({
 }
 
 const WORD_VARIANTS: Variants = {
-  hidden: { opacity: 0, y: "0.3em" },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: EASE } },
+  hidden: { opacity: 0, y: "0.45em" },
+  visible: { opacity: 1, y: 0, transition: { duration: 1.05, ease: EASE } },
 };
 
 /**
@@ -208,7 +225,7 @@ export function AnimatedText({
   className,
   as = "span",
   delay = 0,
-  each = 0.03,
+  each = 0.06,
 }: {
   text: string;
   className?: string;
@@ -226,7 +243,7 @@ export function AnimatedText({
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={VIEWPORT}
-        transition={{ duration: 0.5, delay }}
+        transition={{ duration: 0.7, delay }}
       >
         {text}
       </Tagged>

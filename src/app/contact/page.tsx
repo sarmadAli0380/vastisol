@@ -22,7 +22,7 @@ export default function ContactPage() {
       <Container className="relative z-10">
         <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-7">
-            <FadeUp duration={0.6}>
+            <FadeUp>
               <Eyebrow>{contactPage.eyebrow}</Eyebrow>
             </FadeUp>
 
@@ -30,22 +30,22 @@ export default function ContactPage() {
               as="h1"
               text={contactPage.heading}
               className="gradient-text mt-7 block text-[2.5rem] font-semibold leading-[1.08] sm:text-5xl lg:text-[3.5rem]"
-              delay={0.05}
-              each={0.04}
+              delay={0.08}
+              each={0.1}
             />
 
-            <FadeUp delay={0.15}>
+            <FadeUp delay={0.22}>
               <p className="lead mt-7 max-w-xl text-ink-muted">
                 {contactPage.lead}
               </p>
             </FadeUp>
 
-            <FadeUp delay={0.06} className="mt-12">
+            <FadeUp delay={0.2} className="mt-12">
               <ContactForm />
             </FadeUp>
           </div>
 
-          <FadeUp delay={0.05} className="lg:col-span-4 lg:col-start-9">
+          <FadeUp delay={0.08} className="lg:col-span-4 lg:col-start-9">
             <div className="lg:sticky lg:top-28">
               <h2 className="font-display text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-ink-faint">
                 {contactPage.asideTitle}

@@ -19,23 +19,23 @@ export function WhyVastisol() {
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-5">
             <div className="lg:sticky lg:top-28">
-              <FadeUp duration={0.6}>
+              <FadeUp>
                 <Eyebrow>{whyVastisol.eyebrow}</Eyebrow>
               </FadeUp>
               <AnimatedText
                 as="h2"
                 text={whyVastisol.heading}
                 className="mt-7 block text-[1.875rem] font-semibold leading-[1.15] sm:text-[2.25rem]"
-                delay={0.05}
+                delay={0.08}
               />
-              <FadeUp delay={0.06}>
+              <FadeUp delay={0.2}>
                 <p className="lead mt-6 text-ink-muted">{whyVastisol.lead}</p>
               </FadeUp>
             </div>
           </div>
 
           <div className="lg:col-span-6 lg:col-start-7">
-            <Stagger as="ul" each={0.05} className="border-t border-rule-strong">
+            <Stagger as="ul" each={0.11} className="border-t border-rule-strong">
               {whyVastisol.items.map((item, i) => (
                 <StaggerItem
                   as="li"

@@ -143,18 +143,35 @@ Primitives in [`src/components/motion/index.tsx`](src/components/motion/index.ts
 - `<Stagger>` / `<StaggerItem>` — sequenced list and grid entrances
 - `<AnimatedText>` — word-by-word fade and rise for headings
 
-House easing is `[0.16, 1, 0.3, 1]` — a long, soft decelerate. Everything
-animates once on entry; nothing loops.
+The system is tuned for calm. Everything animates once on entry; nothing loops.
 
-Two rules keep entrances from feeling late, both in `motion/index.tsx`:
+**Three values control the whole feel** — change these rather than individual
+call sites:
 
-- `VIEWPORT.margin` has a **positive** bottom value, which grows the detection
-  box past the fold so a block starts animating just before you reach it. A
-  negative margin does the opposite — you arrive at blank space and watch it
-  fill in.
-- `MAX_STAGGER` caps total word-stagger per heading. Without it, stagger time
-  scales with word count and a long heading is still assembling while you read
-  it. Only the gap between words tightens; the cap holds.
+| Value | Current | Effect |
+|---|---|---|
+| `EASE` | `[0.215, 0.61, 0.355, 1]` | The curve. Gentle cubic ease-out. |
+| durations | ~0.9–1.05s | How long each element takes. |
+| `MAX_STAGGER` | `0.55s` | How much cascade a heading is allowed. |
+
+**Why this curve.** An earlier version used `[0.16, 1, 0.3, 1]` — exponential
+ease-out, which covers ~60% of its distance in the first 15% of its duration.
+Elements snapped into place and then sat still, which reads as *popping* no
+matter how long the duration is. The cubic curve spreads the movement evenly so
+things glide. If motion ever feels snappy again, suspect the curve before the
+duration.
+
+**Why it reads as one wash rather than separate arrivals.** Each word takes
+~1.05s while the gap between words is under 0.06s, so many words are always
+mid-transition at once. On the sixteen-word Vision heading, all sixteen are in
+flight simultaneously around the 800ms mark. Overlap is what makes it smooth —
+if you shorten durations without also shortening the stagger, the overlap
+collapses and the popping returns.
+
+**Why nothing feels late.** `VIEWPORT.margin` has a **positive** bottom value,
+growing the detection box past the fold so a block starts easing in before you
+reach it and is fully readable by the time it is centred. A negative margin
+does the opposite: you arrive at blank space and watch it fill in.
 
 `AnimatedText` fades words rather than clipping them behind a mask, on purpose:
 with a mask each word is genuinely absent until its turn, so a heading you are

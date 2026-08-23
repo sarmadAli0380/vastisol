@@ -11,7 +11,7 @@ import {
 import { nav } from "@/lib/content";
 import { ArrowRight, ButtonLink, Container, Wordmark } from "./primitives";
 
-const EASE = [0.16, 1, 0.3, 1] as const;
+const EASE = [0.215, 0.61, 0.355, 1] as const;
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
@@ -59,7 +59,7 @@ export function SiteHeader() {
                   key={item.href}
                   initial={{ opacity: 0, y: -6 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.1 + i * 0.06, ease: EASE }}
+                  transition={{ duration: 0.9, delay: 0.15 + i * 0.09, ease: EASE }}
                 >
                   <Link
                     href={item.href}

@@ -19,7 +19,7 @@ export function Problem() {
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-5">
             <div className="lg:sticky lg:top-28">
-              <FadeUp duration={0.6}>
+              <FadeUp>
                 <Eyebrow>{problem.eyebrow}</Eyebrow>
               </FadeUp>
 
@@ -27,17 +27,17 @@ export function Problem() {
                 as="h2"
                 text={problem.heading}
                 className="mt-7 block text-[1.875rem] font-semibold leading-[1.15] sm:text-[2.25rem] lg:text-[2.5rem]"
-                delay={0.05}
+                delay={0.08}
               />
 
-              <FadeUp delay={0.06}>
+              <FadeUp delay={0.2}>
                 <p className="lead mt-7 text-ink-muted">{problem.lead}</p>
               </FadeUp>
             </div>
           </div>
 
           <div className="lg:col-span-7">
-            <Stagger as="ul" each={0.05} className="border-t border-rule">
+            <Stagger as="ul" each={0.11} className="border-t border-rule">
               {problem.items.map((item, i) => (
                 <StaggerItem
                   as="li"
@@ -55,7 +55,7 @@ export function Problem() {
               ))}
             </Stagger>
 
-            <FadeUp delay={0.05}>
+            <FadeUp delay={0.08}>
               <p className="gradient-text mt-8 font-display text-2xl font-semibold tracking-[-0.025em]">
                 {problem.closing}
               </p>

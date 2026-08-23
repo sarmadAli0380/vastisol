@@ -61,7 +61,7 @@
   --spacing-section: 7rem;
   --spacing-section-lg: 10rem;
 
-  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-soft: cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
 @layer base {
@@ -139,7 +139,7 @@
      rather than colouring only the first word.
 
      `display: inline-block` is load-bearing, not cosmetic. These headings
-     contain inline-block word spans (the reveal masks). If the gradient
+     contain inline-block word spans (one per animated word). If the gradient
      element is left as a plain inline box it fragments across lines, and a
      fragmented inline cannot clip its background through inline-block
      descendants — the text then paints fully transparent: invisible, but

@@ -24,7 +24,7 @@ export function Hero() {
       <Container className="relative z-10">
         <div className="grid items-center gap-14 pb-20 pt-16 md:pt-20 lg:grid-cols-12 lg:gap-12 lg:pb-28 lg:pt-24">
           <div className="lg:col-span-7">
-            <FadeUp duration={0.6}>
+            <FadeUp>
               <Eyebrow>{hero.eyebrow}</Eyebrow>
             </FadeUp>
 
@@ -33,21 +33,21 @@ export function Hero() {
                 as="span"
                 text={hero.heading[0]}
                 className="block"
-                delay={0.05}
+                delay={0.1}
               />
               <AnimatedText
                 as="span"
                 text={hero.heading[1]}
                 className="gradient-text block"
-                delay={0.16}
+                delay={0.28}
               />
             </h1>
 
-            <FadeUp delay={0.26} duration={0.8}>
+            <FadeUp delay={0.5}>
               <p className="lead mt-8 max-w-xl text-ink-muted">{hero.body}</p>
             </FadeUp>
 
-            <FadeUp delay={0.34} duration={0.8}>
+            <FadeUp delay={0.68}>
               <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
                 <ButtonLink href={hero.primaryCta.href} className="group">
                   {hero.primaryCta.label}
@@ -64,7 +64,7 @@ export function Hero() {
             className="lg:col-span-5"
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 1.2, delay: 0.5, ease: [0.215, 0.61, 0.355, 1] }}
           >
             <GrowthDiagram />
           </motion.div>
@@ -76,8 +76,8 @@ export function Hero() {
         <Container>
           <Stagger
             as="ul"
-            delay={0.22}
-            each={0.04}
+            delay={0.9}
+            each={0.12}
             className="grid grid-cols-1 divide-y divide-rule lg:grid-cols-5 lg:divide-x lg:divide-y-0"
           >
             {functionStrip.map((label) => (

@@ -23,24 +23,24 @@ export function HowItWorks() {
 
       <Container className="relative z-10">
         <div className="max-w-3xl">
-          <FadeUp duration={0.6}>
+          <FadeUp>
             <Eyebrow>{howItWorks.eyebrow}</Eyebrow>
           </FadeUp>
           <AnimatedText
             as="h2"
             text={howItWorks.heading}
             className="mt-7 block text-[2rem] font-semibold leading-[1.12] sm:text-[2.5rem] lg:text-[3rem]"
-            delay={0.05}
+            delay={0.08}
           />
-          <FadeUp delay={0.05}>
+          <FadeUp delay={0.08}>
             <p className="lead mt-7 text-ink-muted">{howItWorks.lead}</p>
           </FadeUp>
         </div>
 
         <Stagger
           as="ol"
-          delay={0.05}
-          each={0.04}
+          delay={0.08}
+          each={0.1}
           className="mt-16 grid gap-px overflow-hidden rounded-2xl bg-gradient-to-br from-teal/25 via-rule to-navy/20 shadow-[0_24px_60px_-32px_rgba(0,52,89,0.45)] sm:grid-cols-2 lg:grid-cols-5"
         >
           {howItWorks.steps.map((step, i) => (
@@ -65,7 +65,7 @@ export function HowItWorks() {
                     hidden: { scaleX: 0 },
                     visible: {
                       scaleX: 1,
-                      transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
+                      transition: { duration: 0.8, ease: [0.215, 0.61, 0.355, 1] },
                     },
                   }}
                 />

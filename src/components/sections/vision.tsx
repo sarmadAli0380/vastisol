@@ -22,21 +22,21 @@ export function Vision() {
       <Container className="relative z-10">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-7">
-            <FadeUp duration={0.6}>
+            <FadeUp>
               <Eyebrow onDark>{vision.eyebrow}</Eyebrow>
             </FadeUp>
             <AnimatedText
               as="h2"
               text={vision.heading}
               className="gradient-text-dark mt-7 block text-[1.875rem] font-semibold leading-[1.22] sm:text-[2.375rem] lg:text-[2.75rem]"
-              delay={0.05}
-              each={0.022}
+              delay={0.08}
+              
             />
           </div>
 
           <div className="space-y-5 self-end lg:col-span-5">
             {vision.paragraphs.map((p, i) => (
-              <FadeUp as="p" key={i} delay={0.2 + i * 0.07}>
+              <FadeUp as="p" key={i} delay={0.28 + i * 0.12}>
                 {p}
               </FadeUp>
             ))}
@@ -45,7 +45,7 @@ export function Vision() {
 
         <Stagger
           as="ol"
-          each={0.04}
+          each={0.1}
           className="mt-20 grid gap-px overflow-hidden rounded-2xl bg-gradient-to-br from-sky/30 via-night-rule to-teal/25 md:grid-cols-3"
         >
           {vision.progression.map((stage, i) => (

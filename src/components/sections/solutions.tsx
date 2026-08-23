@@ -16,7 +16,7 @@ export function Solutions() {
       </AmbientLayer>
 
       <Container className="relative z-10">
-        <FadeUp duration={0.6}>
+        <FadeUp>
           <Eyebrow>{solutions.eyebrow}</Eyebrow>
         </FadeUp>
 
@@ -25,10 +25,10 @@ export function Solutions() {
             as="h2"
             text={solutions.heading}
             className="block text-[2rem] font-semibold leading-[1.14] sm:text-[2.375rem] lg:col-span-6 lg:text-[2.625rem]"
-            delay={0.05}
+            delay={0.08}
           />
           <FadeUp
-            delay={0.15}
+            delay={0.22}
             className="self-end lg:col-span-5 lg:col-start-8"
           >
             <p className="lead text-ink-muted">{solutions.lead}</p>
@@ -37,7 +37,7 @@ export function Solutions() {
 
         <Stagger
           as="ul"
-          each={0.05}
+          each={0.11}
           className="mt-16 border-t border-rule-strong"
         >
           {solutions.items.map((item, i) => (

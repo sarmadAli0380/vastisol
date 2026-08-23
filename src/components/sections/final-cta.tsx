@@ -19,10 +19,10 @@ export function FinalCta() {
             as="h2"
             text={finalCta.heading}
             className="gradient-text-dark block text-[2.5rem] font-semibold leading-[1.08] sm:text-6xl"
-            each={0.04}
+            each={0.1}
           />
 
-          <FadeUp delay={0.15}>
+          <FadeUp delay={0.22}>
             <p className="lead mx-auto mt-7 max-w-2xl text-night-muted">
               {finalCta.body}
             </p>
