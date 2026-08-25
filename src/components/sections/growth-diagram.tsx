@@ -80,9 +80,11 @@ export function GrowthDiagram() {
                 ))}
               </div>
 
+              {/* Position only — these are the diagram's labels. The dots
+                  above may fade because they are pure graphics; text may not. */}
               <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ y: 8 }}
+                animate={{ y: 0 }}
                 transition={{
                   duration: 0.8,
                   delay: labelAt,

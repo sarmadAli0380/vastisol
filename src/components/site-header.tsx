@@ -57,8 +57,10 @@ export function SiteHeader() {
               {nav.map((item, i) => (
                 <motion.li
                   key={item.href}
-                  initial={{ opacity: 0, y: -6 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  // Position only. These are navigation labels — fading them
+                  // in means the nav is unreadable during first load.
+                  initial={{ y: -6 }}
+                  animate={{ y: 0 }}
                   transition={{ duration: 0.9, delay: 0.15 + i * 0.09, ease: EASE }}
                 >
                   <Link
@@ -128,8 +130,8 @@ export function SiteHeader() {
                     <motion.li
                       key={item.href}
                       className="border-b border-rule/70"
-                      initial={{ opacity: 0, x: -8 }}
-                      animate={{ opacity: 1, x: 0 }}
+                      initial={{ x: -8 }}
+                      animate={{ x: 0 }}
                       transition={{
                         duration: 0.4,
                         delay: 0.08 + i * 0.05,

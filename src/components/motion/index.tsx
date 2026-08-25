@@ -16,6 +16,26 @@ import { Fragment, type ReactNode } from "react";
  * arrives as a single slow wash rather than a series of separate arrivals.
  * Everything animates once on entry; nothing loops or demands attention.
  *
+ * THESE ANIMATE POSITION ONLY — NEVER OPACITY. Text is painted at full
+ * opacity from the very first frame and merely glides into place.
+ *
+ * This is a hard rule, and it exists because breaking it caused two critical
+ * defects. When these primitives started at `opacity: 0`, that zero was
+ * server-rendered onto every paragraph and every word of every heading — 230
+ * inline `opacity:0` declarations on the home page. The consequences an audit
+ * measured:
+ *
+ *   - Largest Contentful Paint went from 216ms to 1716ms on desktop, and from
+ *     920ms to 3536ms on a throttled mid-range connection, because the browser
+ *     had the text and the fonts but had been told not to show them.
+ *   - During an ordinary scroll only 40% of on-screen text was readable at any
+ *     moment, because a ~1s fade cannot finish in the ~250ms of lead time a
+ *     scrolling reader gives it.
+ *
+ * Moving something that is already visible costs nothing on either count. If
+ * you are tempted to add a fade back, don't — shorten the duration or increase
+ * the travel instead.
+ *
  * Three values control the feel. Change these rather than individual call
  * sites: EASE (the curve), the durations below, and MAX_STAGGER (how much of
  * a cascade a heading is allowed).
@@ -141,8 +161,8 @@ export function FadeUp({
     <Tagged
       tag={as}
       className={className}
-      initial={{ opacity: 0, y }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ y }}
+      whileInView={{ y: 0 }}
       viewport={VIEWPORT}
       transition={{ duration, delay, ease: EASE }}
     >
@@ -201,8 +221,8 @@ export function StaggerItem({
   if (reduce) return <Tagged tag={as} className={className}>{children}</Tagged>;
 
   const variants: Variants = {
-    hidden: { opacity: 0, y },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.9, ease: EASE } },
+    hidden: { y },
+    visible: { y: 0, transition: { duration: 0.9, ease: EASE } },
   };
 
   return (
@@ -213,18 +233,15 @@ export function StaggerItem({
 }
 
 const WORD_VARIANTS: Variants = {
-  hidden: { opacity: 0, y: "0.45em" },
-  visible: { opacity: 1, y: 0, transition: { duration: 1.05, ease: EASE } },
+  // Travel is small because the words are visible the whole way — a large
+  // offset would read as broken layout rather than as motion.
+  hidden: { y: "0.24em" },
+  visible: { y: 0, transition: { duration: 1.05, ease: EASE } },
 };
 
 /**
- * Word-by-word fade and rise across a heading.
- *
- * Deliberately a fade rather than a clipped mask-reveal. With a mask each word
- * is genuinely absent until its turn arrives, so a heading you are already
- * looking at appears to be still loading. Fading means every word is legible
- * for the whole transition and the line only firms up — which reads as smooth
- * instead of late.
+ * Word-by-word rise across a heading. Words are fully opaque throughout and
+ * only settle upward, so the line is readable from the first frame.
  *
  * Splitting on words rather than characters keeps text selectable, leaves
  * natural line wrapping intact, and reads as a single gesture instead of a
@@ -250,6 +267,36 @@ export function AnimatedText({
   if (reduce) {
     return (
       <Tagged tag={as} className={className}>
+        {text}
+      </Tagged>
+    );
+  }
+
+  // Gradient headings animate as ONE unit, never per word.
+  //
+  // .gradient-text paints its colour by clipping a background to the glyphs.
+  // A descendant with a transform gets its own stacking context and is painted
+  // separately, so the ancestor's clipped background never reaches it — the
+  // text renders fully transparent. Per-word transforms therefore made every
+  // gradient heading invisible for the entire ~1s of its animation. It was
+  // invisible with opacity:1, so opacity-based checks could not see it.
+  //
+  // Moving the single transform onto the gradient element itself is safe:
+  // an element's own transform carries its background with it.
+  //
+  // Detected from the class rather than passed as a prop deliberately — a
+  // prop is something a future call site can forget, and forgetting it brings
+  // back invisible text.
+  if (/gradient-text/.test(className ?? "")) {
+    return (
+      <Tagged
+        tag={as}
+        className={className}
+        initial={{ y: "0.24em" }}
+        whileInView={{ y: 0 }}
+        viewport={VIEWPORT}
+        transition={{ duration: 1.05, delay, ease: EASE }}
+      >
         {text}
       </Tagged>
     );

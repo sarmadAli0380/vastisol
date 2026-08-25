@@ -279,6 +279,29 @@
   }
 }
 
+/* Loading screen: the mark breathes while the page settles. Slow and even —
+   it should read as calm presence, not as a spinner demanding attention. */
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.055);
+  }
+}
+
+/* The three lower nodes light in sequence, suggesting a team assembling. */
+@keyframes node-glow {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
 @keyframes pulse-node {
   0%,
   100% {

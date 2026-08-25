@@ -62,8 +62,9 @@ export function Hero() {
 
           <motion.div
             className="lg:col-span-5"
-            initial={{ opacity: 0, y: 28 }}
-            animate={{ opacity: 1, y: 0 }}
+            // Position only — the card carries text, so it must paint at once.
+            initial={{ y: 28 }}
+            animate={{ y: 0 }}
             transition={{ duration: 1.2, delay: 0.5, ease: [0.215, 0.61, 0.355, 1] }}
           >
             <GrowthDiagram />

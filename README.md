@@ -173,9 +173,75 @@ growing the detection box past the fold so a block starts easing in before you
 reach it and is fully readable by the time it is centred. A negative margin
 does the opposite: you arrive at blank space and watch it fill in.
 
-`AnimatedText` fades words rather than clipping them behind a mask, on purpose:
-with a mask each word is genuinely absent until its turn, so a heading you are
-already looking at appears to still be loading.
+### The rule that matters most: never animate opacity on text
+
+These primitives animate **position only**. Text is painted at full opacity from
+the first frame and merely glides into place.
+
+This is not a style preference — breaking it caused two critical defects that an
+audit caught. When the primitives started at `opacity: 0`, that zero was
+server-rendered onto every paragraph and every word of every heading:
+
+- **LCP went from 216 ms to 1716 ms** on desktop, and from 920 ms to 3536 ms on a
+  throttled mid-range connection. The browser had the text and the fonts and had
+  been told not to show them.
+- **Only 40% of on-screen text was readable during an ordinary scroll**, because
+  a ~1 s fade cannot finish in the ~250 ms of lead time a scrolling reader gives it.
+
+Moving something already visible costs nothing on either count. If motion feels
+too plain, shorten the duration or increase the travel — do not add a fade.
+
+### The gradient-heading trap
+
+`.gradient-text` colours text by clipping a background image to the glyphs. **A
+descendant with a transform breaks that**: it gets its own stacking context and
+is painted separately, so the clipped background never reaches it and the text
+renders fully transparent — invisible, but still selectable, and invisible at
+`opacity: 1` so opacity-based checks cannot see it.
+
+Two consequences, both already handled — don't undo them:
+
+1. `.gradient-text` sets `display: inline-block` in `globals.css`. A plain
+   `inline` box fragments across lines and fails the same way. Callers may
+   override with `block`, never with `inline`.
+2. `AnimatedText` detects the gradient class and animates the heading as **one
+   unit** instead of per word, so the gradient element has no transformed
+   descendants. This is detected from the class rather than passed as a prop on
+   purpose — a prop is something a call site can forget, and forgetting it
+   brings back invisible text.
+
+A quick check for either regression, pasted into the console:
+
+```js
+document.querySelectorAll('.gradient-text, .gradient-text-dark').forEach(g =>
+  console.log(g.textContent.slice(0, 30),
+    [...g.querySelectorAll('*')].filter(d => getComputedStyle(d).transform !== 'none').length))
+```
+
+Any non-zero count means that heading is invisible while it animates.
+
+### Loading screen
+
+`src/components/loading-screen.tsx` covers the page on a full document load with
+a breathing wordmark, then lifts away.
+
+It dismisses on **actual readiness** — web fonts resolved and the page painted —
+never on a fixed timer, with a 700 ms floor so a fast load isn't a flicker and a
+2.5 s ceiling so a stalled font can't trap anyone. A timer-based loader would
+hold back content the browser had already finished and make the real load worse.
+
+Two things it has to survive, both learned the hard way:
+
+- **`requestAnimationFrame` never fires in a background tab.** Opening a link in
+  a new tab is ordinary. So the paint gate is raced against a timer and skipped
+  entirely when the document starts hidden.
+- **Removal is driven by `setTimeout`, never by the exit animation finishing.**
+  Motion drives transitions from rAF, so waiting on the animation left the cover
+  stuck on screen indefinitely in a background tab. `setTimeout` is throttled
+  there but still fires.
+
+The page underneath is fully painted the whole time — text is not hidden to make
+the loader work, so it does not affect LCP.
 
 ### Ambient background motion
 

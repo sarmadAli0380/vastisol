@@ -4,6 +4,7 @@ import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { MotionProvider } from "@/components/motion/provider";
+import { LoadingScreen } from "@/components/loading-screen";
 import { site } from "@/lib/content";
 
 // Brand face: headings, navigation, buttons and labels.
@@ -50,12 +51,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <head>
         {/*
-          Motion renders its `initial` state as inline styles during SSR, so
-          with JavaScript disabled the page would stay faded out. Reset it —
-          no animation is possible in that case anyway.
+          Without JavaScript nothing hydrates, so two things must be undone:
+
+          1. The loading screen is server-rendered and would never dismiss,
+             covering the site permanently.
+          2. Motion writes its `initial` transform as an inline style during
+             SSR, leaving content offset from its final position.
+
+          Neither can animate in that case anyway, so both are reset.
         */}
         <noscript>
-          <style>{`#main *,footer *{opacity:1!important;transform:none!important}`}</style>
+          <style>{`[data-loading-screen]{display:none!important}#main *,footer *{transform:none!important}`}</style>
         </noscript>
       </head>
       <body className="flex min-h-full flex-col">
@@ -66,6 +72,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to content
         </a>
         <MotionProvider>
+          <LoadingScreen />
           <SiteHeader />
           <main id="main" className="flex-1">
             {children}
