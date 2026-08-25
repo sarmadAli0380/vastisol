@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ContactForm } from "@/components/contact-form";
 import { Container, Eyebrow, Index } from "@/components/primitives";
 import { AnimatedText, FadeUp } from "@/components/motion";
+import { AmbientLayer, Constellation, Glow } from "@/components/ambient";
 import { contactPage, site } from "@/lib/content";
 
 export const metadata: Metadata = {
@@ -12,36 +13,41 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <section className="border-b border-rule py-16 lg:py-24">
-      <Container>
+    <section className="relative isolate overflow-hidden border-b border-rule py-16 lg:py-24">
+      <AmbientLayer>
+        <Glow />
+        <Constellation className="opacity-40" />
+      </AmbientLayer>
+
+      <Container className="relative z-10">
         <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-7">
-            <FadeUp duration={0.6}>
+            <FadeUp>
               <Eyebrow>{contactPage.eyebrow}</Eyebrow>
             </FadeUp>
 
             <AnimatedText
               as="h1"
               text={contactPage.heading}
-              className="mt-7 block text-[2.5rem] leading-[1.06] sm:text-5xl lg:text-[3.5rem]"
-              delay={0.1}
-              each={0.06}
+              className="gradient-text mt-7 block text-[2.5rem] font-semibold leading-[1.08] sm:text-5xl lg:text-[3.5rem]"
+              delay={0.08}
+              each={0.1}
             />
 
-            <FadeUp delay={0.3}>
+            <FadeUp delay={0.22}>
               <p className="lead mt-7 max-w-xl text-ink-muted">
                 {contactPage.lead}
               </p>
             </FadeUp>
 
-            <FadeUp delay={0.12} className="mt-12">
+            <FadeUp delay={0.2} className="mt-12">
               <ContactForm />
             </FadeUp>
           </div>
 
-          <FadeUp delay={0.2} className="lg:col-span-4 lg:col-start-9">
+          <FadeUp delay={0.08} className="lg:col-span-4 lg:col-start-9">
             <div className="lg:sticky lg:top-28">
-              <h2 className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.18em] text-ink-faint">
+              <h2 className="font-display text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-ink-faint">
                 {contactPage.asideTitle}
               </h2>
 
@@ -63,7 +69,7 @@ export default function ContactPage() {
                 </p>
                 <a
                   href={`mailto:${site.email}`}
-                  className="mt-1 inline-block border-b border-rule-strong pb-0.5 text-[0.9375rem] text-ink transition-colors duration-200 hover:border-accent hover:text-accent"
+                  className="mt-1 inline-block border-b border-rule-strong pb-0.5 text-[0.9375rem] text-ink transition-colors duration-200 hover:border-teal hover:text-accent-text"
                 >
                   {site.email}
                 </a>

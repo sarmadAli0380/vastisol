@@ -2,49 +2,66 @@
 
 /* ============================================================
    Vastisol design tokens
-   Light editorial B2B: warm paper, ink, one restrained accent.
+
+   Brand palette:
+     #00171f  midnight  — ink, dark sections
+     #003459  navy      — secondary, accent text
+     #007ea7  teal      — CTAs, highlights, graphics
+
+   The palette is all dark, so the light neutrals below are derived
+   from it (cool, blue-tinted) rather than being plain greys.
    ============================================================ */
 
 @theme {
-  /* Surfaces */
-  --color-paper: #faf9f6; /* page canvas — warm off-white */
-  --color-paper-sunk: #f3f1ea; /* recessed bands */
+  /* Brand */
+  --color-midnight: #00171f;
+  --color-navy: #003459;
+  --color-teal: #007ea7;
+
+  /* Surfaces — cool off-whites tinted toward the brand blues */
+  --color-paper: #f4f8fa;
+  --color-paper-sunk: #e8f0f4;
   --color-card: #ffffff;
 
   /* Ink */
-  --color-ink: #16181b; /* headings, primary text */
-  --color-ink-muted: #55585e; /* body copy — 6.8:1 on paper */
-  --color-ink-faint: #8a8d93; /* captions, meta — decorative only */
+  --color-ink: #00171f; /* 18:1 on paper */
+  --color-ink-muted: #4a5d68; /* body copy — 6.4:1 on paper */
+  --color-ink-faint: #7b8f9a; /* captions and meta */
 
   /* Structure */
-  --color-rule: #e5e2da; /* hairline rules */
-  --color-rule-strong: #d3cfc4;
+  --color-rule: #d3e2ea;
+  --color-rule-strong: #b4ccd8;
 
-  /* Accent — deep evergreen. 11:1 on paper. */
-  --color-accent: #16403a;
-  --color-accent-hover: #0f2f2a;
-  --color-accent-soft: #e7efec;
+  /* Accents.
+     #007ea7 sits at 4.3:1 on paper — fine for large text, buttons and
+     graphics, but not body-size text. Use `navy` when accent text needs
+     to meet 4.5:1; it clears 12:1. */
+  --color-accent: #007ea7;
+  --color-accent-hover: #00647f;
+  --color-accent-text: #003459;
+  --color-accent-soft: #dceef5;
+  --color-accent-tint: #eef7fa;
+
+  /* Dark bands */
+  --color-night: #00171f;
+  --color-night-raised: #002230;
+  --color-night-rule: #10394c;
+  --color-night-muted: #9fb6c2; /* 8.7:1 on night */
+  --color-sky: #56c5e8; /* accent on dark — 9.2:1 on night */
 
   /* Form validation */
-  --color-destructive: #b3261e;
+  --color-destructive: #c62828;
 
-  /* Dark band */
-  --color-night: #14171a;
-  --color-night-raised: #1d2125;
-  --color-night-rule: #2c3238;
-  --color-night-muted: #a8adb4; /* 8:1 on night */
-  --color-mint: #7fd1be; /* accent on dark — 10:1 on night */
-
-  /* Type */
-  --font-display: var(--font-newsreader), ui-serif, Georgia, serif;
+  /* Type — Poppins carries the brand voice (headings, UI, labels),
+     Inter handles long-form body copy where it reads better. */
+  --font-display: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-mono-face), ui-monospace, monospace;
 
-  /* Spacious rhythm (density 3/10) */
+  /* Spacious rhythm */
   --spacing-section: 7rem;
   --spacing-section-lg: 10rem;
 
-  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-soft: cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
 @layer base {
@@ -68,8 +85,8 @@
   h3 {
     color: var(--color-ink);
     font-family: var(--font-display);
-    font-weight: 400;
-    letter-spacing: -0.02em;
+    font-weight: 600;
+    letter-spacing: -0.025em;
     text-wrap: balance;
   }
 
@@ -78,35 +95,33 @@
     scroll-margin-top: 5.5rem;
   }
 
-  /* One visible focus treatment everywhere */
   :focus-visible {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid var(--color-teal);
     outline-offset: 3px;
     border-radius: 2px;
   }
 
   ::selection {
-    background-color: var(--color-accent);
+    background-color: var(--color-teal);
     color: #fff;
   }
 }
 
 @layer components {
-  /* Small uppercase mono label used as a section eyebrow */
+  /* Small uppercase label opening a section */
   .eyebrow {
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
     font-size: 0.6875rem;
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--color-accent);
+    color: var(--color-accent-text);
   }
 
   .eyebrow-on-dark {
-    color: var(--color-mint);
+    color: var(--color-sky);
   }
 
-  /* Lead paragraph under a section heading */
   .lead {
     font-size: 1.125rem;
     line-height: 1.65;
@@ -118,10 +133,192 @@
       font-size: 1.25rem;
     }
   }
+
+  /* Teal-to-navy gradient for emphasis words in headings.
+     Near-horizontal so multi-line headings sweep evenly on every line
+     rather than colouring only the first word.
+
+     `display: inline-block` is load-bearing, not cosmetic. These headings
+     contain inline-block word spans (one per animated word). If the gradient
+     element is left as a plain inline box it fragments across lines, and a
+     fragmented inline cannot clip its background through inline-block
+     descendants — the text then paints fully transparent: invisible, but
+     still selectable. Any single unfragmented box fixes it, so callers may
+     override with `block`, but never with `inline`. */
+  .gradient-text,
+  .gradient-text-dark {
+    display: inline-block;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .gradient-text {
+    background-image: linear-gradient(
+      95deg,
+      var(--color-teal) 0%,
+      #005f85 45%,
+      var(--color-navy) 100%
+    );
+  }
+
+  /* Lighter variant for use on the dark bands */
+  .gradient-text-dark {
+    background-image: linear-gradient(
+      95deg,
+      #ffffff 0%,
+      #b8e4f4 50%,
+      var(--color-sky) 100%
+    );
+  }
+
+  /* Safety net: if a gradient heading ever ends up in a context where the
+     clip cannot paint, fall back to a solid brand colour rather than
+     invisible text. Browsers that support background-clip re-hide this. */
+  @supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+    .gradient-text {
+      color: var(--color-navy);
+    }
+    .gradient-text-dark {
+      color: #ffffff;
+    }
+  }
+
+  /* Deep brand gradient for the dark sections */
+  .gradient-night {
+    background-image:
+      radial-gradient(
+        ellipse 80% 60% at 15% 0%,
+        rgba(0, 52, 89, 0.85) 0%,
+        transparent 60%
+      ),
+      radial-gradient(
+        ellipse 70% 70% at 90% 100%,
+        rgba(0, 126, 167, 0.35) 0%,
+        transparent 62%
+      ),
+      linear-gradient(160deg, #00171f 0%, #001d28 55%, #00171f 100%);
+  }
+
+  /* Hairline that fades in from both ends */
+  .rule-fade {
+    height: 1px;
+    background-image: linear-gradient(
+      90deg,
+      transparent,
+      var(--color-rule-strong) 18%,
+      var(--color-rule-strong) 82%,
+      transparent
+    );
+  }
+
+  /* Thin gradient light along a card's top edge */
+  .edge-light::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 1px;
+    background-image: linear-gradient(
+      90deg,
+      transparent,
+      rgba(0, 126, 167, 0.7),
+      transparent
+    );
+  }
+
+  .edge-light-dark::before {
+    background-image: linear-gradient(
+      90deg,
+      transparent,
+      rgba(86, 197, 232, 0.6),
+      transparent
+    );
+  }
 }
 
-/* Scroll-triggered motion is handled by components in src/components/motion.
-   This block covers everything driven by plain CSS transitions instead. */
+/* ---------- Ambient background motion ----------
+   Slow drifts on transform/opacity only, so they stay on the compositor
+   and never touch layout. Used by src/components/ambient. */
+
+@keyframes drift-a {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(3%, -4%, 0) scale(1.06);
+  }
+}
+
+@keyframes drift-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-4%, 3%, 0) scale(0.94);
+  }
+}
+
+@keyframes rotate-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes grid-pan {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-56px, -56px, 0);
+  }
+}
+
+/* Loading screen: the mark breathes while the page settles. Slow and even —
+   it should read as calm presence, not as a spinner demanding attention. */
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.055);
+  }
+}
+
+/* The three lower nodes light in sequence, suggesting a team assembling. */
+@keyframes node-glow {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-node {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+/* NOTE: a `trace-line` keyframe animating `stroke-dashoffset` used to live
+   here. stroke-dashoffset is a geometry property, so it forced a layout on
+   every frame — measured at ~60 layouts/second while the page sat idle.
+   Removed. Keep decorative SVG animation to transform and opacity. */
+
+/* Motion is decorative everywhere it is used — switching it off costs
+   nothing but a little atmosphere. */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

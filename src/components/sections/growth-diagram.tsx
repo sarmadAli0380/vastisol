@@ -2,11 +2,13 @@
 
 import { motion } from "@/components/motion";
 
-const EASE = [0.16, 1, 0.3, 1] as const;
+const EASE = [0.215, 0.61, 0.355, 1] as const;
 
-const DOT_STEP = 0.035; // gap between dots within a stage
-const STAGE_GAP = 0.25; // pause between stages
-const START = 0.55; // waits for the hero headline to finish
+// Paced so the three stages build as one calm sequence rather than a race.
+// Slow enough to read as deliberate, short enough not to feel like waiting.
+const DOT_STEP = 0.032; // gap between dots within a stage
+const STAGE_GAP = 0.2;  // pause between stages
+const START = 0.5;    // lets the hero headline get moving first
 
 /**
  * Start times are resolved once at module load so each stage waits for the
@@ -38,8 +40,13 @@ const STAGES = [
  */
 export function GrowthDiagram() {
   return (
-    <figure className="rounded-2xl border border-rule bg-card p-7 shadow-[0_1px_2px_rgba(22,24,27,0.04),0_12px_32px_-16px_rgba(22,24,27,0.12)] sm:p-9">
-      <figcaption className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.18em] text-ink-faint">
+    <figure className="relative overflow-hidden rounded-2xl border border-rule bg-card/85 p-7 shadow-[0_1px_2px_rgba(0,23,31,0.05),0_18px_44px_-20px_rgba(0,52,89,0.28)] backdrop-blur-md sm:p-9">
+      {/* Teal edge-light along the top of the card. */}
+      <span
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal/70 to-transparent"
+      />
+      <figcaption className="font-display text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-accent-text">
         The Vastisol model
       </figcaption>
 
@@ -58,14 +65,14 @@ export function GrowthDiagram() {
                 {Array.from({ length: stage.count }).map((_, i) => (
                   <motion.span
                     key={i}
-                    className="h-3 w-3 rounded-[3px] bg-accent"
+                    className="h-3 w-3 rounded-[3px] bg-teal"
                     initial={{ opacity: 0, scale: 0.4 }}
                     animate={{
                       opacity: 0.35 + 0.65 * (1 - i / stage.count),
                       scale: 1,
                     }}
                     transition={{
-                      duration: 0.5,
+                      duration: 0.75,
                       delay: stageStart + i * DOT_STEP,
                       ease: EASE,
                     }}
@@ -73,11 +80,13 @@ export function GrowthDiagram() {
                 ))}
               </div>
 
+              {/* Position only — these are the diagram's labels. The dots
+                  above may fade because they are pure graphics; text may not. */}
               <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ y: 8 }}
+                animate={{ y: 0 }}
                 transition={{
-                  duration: 0.6,
+                  duration: 0.8,
                   delay: labelAt,
                   ease: EASE,
                 }}
@@ -95,7 +104,7 @@ export function GrowthDiagram() {
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
                   transition={{
-                    duration: 0.7,
+                    duration: 0.9,
                     delay: labelAt + 0.1,
                     ease: EASE,
                   }}

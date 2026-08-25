@@ -11,7 +11,7 @@ import {
 import { nav } from "@/lib/content";
 import { ArrowRight, ButtonLink, Container, Wordmark } from "./primitives";
 
-const EASE = [0.16, 1, 0.3, 1] as const;
+const EASE = [0.215, 0.61, 0.355, 1] as const;
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
@@ -57,9 +57,11 @@ export function SiteHeader() {
               {nav.map((item, i) => (
                 <motion.li
                   key={item.href}
-                  initial={{ opacity: 0, y: -6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.1 + i * 0.06, ease: EASE }}
+                  // Position only. These are navigation labels — fading them
+                  // in means the nav is unreadable during first load.
+                  initial={{ y: -6 }}
+                  animate={{ y: 0 }}
+                  transition={{ duration: 0.9, delay: 0.15 + i * 0.09, ease: EASE }}
                 >
                   <Link
                     href={item.href}
@@ -69,7 +71,7 @@ export function SiteHeader() {
                     {item.label}
                     <span
                       aria-hidden="true"
-                      className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-accent transition-transform duration-300 ease-out group-hover:scale-x-100"
+                      className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-teal transition-transform duration-300 ease-out group-hover:scale-x-100"
                     />
                   </Link>
                 </motion.li>
@@ -128,8 +130,8 @@ export function SiteHeader() {
                     <motion.li
                       key={item.href}
                       className="border-b border-rule/70"
-                      initial={{ opacity: 0, x: -8 }}
-                      animate={{ opacity: 1, x: 0 }}
+                      initial={{ x: -8 }}
+                      animate={{ x: 0 }}
                       transition={{
                         duration: 0.4,
                         delay: 0.08 + i * 0.05,

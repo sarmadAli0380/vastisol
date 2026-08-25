@@ -7,61 +7,47 @@ import {
   Container,
   Eyebrow,
 } from "@/components/primitives";
+import { AmbientLayer, Constellation, DotGrid, Glow } from "@/components/ambient";
 import { AnimatedText, FadeUp, Stagger, StaggerItem, motion } from "@/components/motion";
 import { GrowthDiagram } from "./growth-diagram";
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden border-b border-rule">
-      {/* Editorial column rules — decorative. They draw down as the page loads. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 mx-auto hidden max-w-[76rem] px-10 lg:block"
-      >
-        <div className="grid h-full grid-cols-12">
-          {Array.from({ length: 11 }).map((_, i) => (
-            <motion.div
-              key={i}
-              className="origin-top border-r border-rule/40"
-              initial={{ scaleY: 0 }}
-              animate={{ scaleY: 1 }}
-              transition={{
-                duration: 1.4,
-                delay: 0.15 + i * 0.04,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-            />
-          ))}
-        </div>
-      </div>
+    <section className="relative isolate overflow-hidden border-b border-rule">
+      {/* Ambient field: drifting brand glow, panning grid, node clusters. */}
+      <AmbientLayer>
+        <Glow />
+        <DotGrid />
+        <Constellation className="opacity-70" />
+      </AmbientLayer>
 
-      <Container className="relative">
+      <Container className="relative z-10">
         <div className="grid items-center gap-14 pb-20 pt-16 md:pt-20 lg:grid-cols-12 lg:gap-12 lg:pb-28 lg:pt-24">
           <div className="lg:col-span-7">
-            <FadeUp duration={0.6}>
+            <FadeUp>
               <Eyebrow>{hero.eyebrow}</Eyebrow>
             </FadeUp>
 
-            <h1 className="mt-7 text-[2.75rem] leading-[1.04] tracking-[-0.025em] sm:text-6xl lg:text-[4.25rem]">
+            <h1 className="mt-7 text-[2.75rem] font-semibold leading-[1.05] tracking-[-0.035em] sm:text-6xl lg:text-[4.25rem]">
               <AnimatedText
                 as="span"
                 text={hero.heading[0]}
                 className="block"
-                delay={0.15}
+                delay={0.1}
               />
               <AnimatedText
                 as="span"
                 text={hero.heading[1]}
-                className="block italic text-accent"
-                delay={0.32}
+                className="gradient-text block"
+                delay={0.28}
               />
             </h1>
 
-            <FadeUp delay={0.55} duration={0.8}>
+            <FadeUp delay={0.5}>
               <p className="lead mt-8 max-w-xl text-ink-muted">{hero.body}</p>
             </FadeUp>
 
-            <FadeUp delay={0.7} duration={0.8}>
+            <FadeUp delay={0.68}>
               <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
                 <ButtonLink href={hero.primaryCta.href} className="group">
                   {hero.primaryCta.label}
@@ -76,9 +62,10 @@ export function Hero() {
 
           <motion.div
             className="lg:col-span-5"
-            initial={{ opacity: 0, y: 28 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
+            // Position only — the card carries text, so it must paint at once.
+            initial={{ y: 28 }}
+            animate={{ y: 0 }}
+            transition={{ duration: 1.2, delay: 0.5, ease: [0.215, 0.61, 0.355, 1] }}
           >
             <GrowthDiagram />
           </motion.div>
@@ -86,12 +73,12 @@ export function Hero() {
       </Container>
 
       {/* Function strip — states the five areas plainly, no invented proof. */}
-      <div className="border-t border-rule">
+      <div className="relative z-10 border-t border-rule bg-white/50 backdrop-blur-sm">
         <Container>
           <Stagger
             as="ul"
             delay={0.9}
-            each={0.07}
+            each={0.12}
             className="grid grid-cols-1 divide-y divide-rule lg:grid-cols-5 lg:divide-x lg:divide-y-0"
           >
             {functionStrip.map((label) => (
@@ -99,8 +86,12 @@ export function Hero() {
                 as="li"
                 key={label}
                 y={10}
-                className="py-4 text-[0.8125rem] font-medium tracking-[0.01em] text-ink-muted lg:py-5 lg:pr-4 lg:pl-5 lg:first:pl-0"
+                className="group flex items-center gap-2.5 py-4 font-display text-[0.8125rem] font-medium text-ink-muted transition-colors duration-300 hover:text-accent-text lg:py-5 lg:pr-4 lg:pl-5 lg:first:pl-0"
               >
+                <span
+                  aria-hidden="true"
+                  className="h-1.5 w-1.5 shrink-0 rounded-full bg-teal/50 transition-all duration-300 group-hover:scale-125 group-hover:bg-teal"
+                />
                 {label}
               </StaggerItem>
             ))}
