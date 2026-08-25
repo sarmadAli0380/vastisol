@@ -40,15 +40,23 @@ export function LoadingScreen() {
     const startedAt = performance.now();
     let cancelled = false;
 
+    // Phase only ever moves forward.
+    //
+    // Both the readiness path and the timeout cap below can fire late — the
+    // cap in particular is a fixed 2.5s timer that keeps running after a fast
+    // load has already finished. Assigning "leaving" unconditionally let it
+    // drag a dismissed loader back onto the screen for another full cycle, a
+    // second or so after the site had been revealed. Guarding the transition
+    // means a late signal is simply ignored.
+    const beginLeaving = () => {
+      if (cancelled) return;
+      setPhase((current) => (current === "showing" ? "leaving" : current));
+    };
+
     const beginExit = () => {
       if (cancelled) return;
       const remaining = MIN_VISIBLE_MS - (performance.now() - startedAt);
-      window.setTimeout(
-        () => {
-          if (!cancelled) setPhase("leaving");
-        },
-        Math.max(0, remaining),
-      );
+      window.setTimeout(beginLeaving, Math.max(0, remaining));
     };
 
     // Readiness = fonts resolved AND the browser has actually painted.
@@ -74,9 +82,7 @@ export function LoadingScreen() {
 
     void Promise.all([fonts, painted]).then(beginExit);
 
-    const cap = window.setTimeout(() => {
-      if (!cancelled) setPhase("leaving");
-    }, MAX_VISIBLE_MS);
+    const cap = window.setTimeout(beginLeaving, MAX_VISIBLE_MS);
 
     return () => {
       cancelled = true;
