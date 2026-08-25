@@ -239,6 +239,13 @@ Two things it has to survive, both learned the hard way:
   Motion drives transitions from rAF, so waiting on the animation left the cover
   stuck on screen indefinitely in a background tab. `setTimeout` is throttled
   there but still fires.
+- **The scroll lock releases on `leaving`, not on `gone`.** Releasing it at the
+  end of the lifecycle meant the lock outlived the reveal: for the whole exit
+  the site was visible and the overlay already inert, yet `body` still had
+  `overflow: hidden`, so wheel input did nothing. It read as the page freezing
+  for half a second right after load and then abruptly working. The lock also
+  compensates for scrollbar width, otherwise the page jumps sideways at the
+  exact moment of the reveal.
 
 The page underneath is fully painted the whole time — text is not hidden to make
 the loader work, so it does not affect LCP.

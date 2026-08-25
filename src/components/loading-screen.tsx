@@ -89,22 +89,43 @@ export function LoadingScreen() {
   // Motion drives transitions from rAF, which is frozen in a background tab,
   // so an unmount that waits on the exit animation leaves the cover stuck on
   // screen indefinitely. setTimeout is throttled there but still fires.
+  // A fixed duration, not one derived from reduceMotion: useReducedMotion()
+  // resolves from null to a boolean after hydration, and depending on it here
+  // would tear down and restart this timer mid-exit, keeping the cover alive
+  // for another full interval. By this point the overlay is transparent,
+  // inert to pointer events and no longer locking scroll, so how long it
+  // lingers before unmounting is invisible either way.
   useEffect(() => {
     if (phase !== "leaving") return;
-    const id = window.setTimeout(
-      () => setPhase("gone"),
-      reduceMotion ? 200 : EXIT_MS,
-    );
+    const id = window.setTimeout(() => setPhase("gone"), EXIT_MS);
     return () => window.clearTimeout(id);
-  }, [phase, reduceMotion]);
+  }, [phase]);
 
-  // Hold the page still underneath so the reveal doesn't land mid-scroll.
+  // Hold the page still underneath, but ONLY while the cover is opaque.
+  //
+  // Releasing on "gone" instead of "leaving" meant the lock outlived the
+  // reveal: for the whole ~700ms exit the site was visible and the overlay
+  // was already inert to pointer events, yet body overflow was still hidden,
+  // so wheel input did nothing. It read as the page freezing for half a
+  // second right after load, then abruptly starting to work.
+  //
+  // Locking body also removes the scrollbar, which reflows the page by its
+  // width and snaps back on release — a visible sideways jump at exactly the
+  // moment of the reveal. Compensating with padding keeps the layout still.
   useEffect(() => {
-    if (phase === "gone") return;
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    if (phase !== "showing") return;
+
+    const { body } = document;
+    const previousOverflow = body.style.overflow;
+    const previousPadding = body.style.paddingRight;
+    const scrollbar = window.innerWidth - document.documentElement.clientWidth;
+
+    body.style.overflow = "hidden";
+    if (scrollbar > 0) body.style.paddingRight = `${scrollbar}px`;
+
     return () => {
-      document.body.style.overflow = previous;
+      body.style.overflow = previousOverflow;
+      body.style.paddingRight = previousPadding;
     };
   }, [phase]);
 
