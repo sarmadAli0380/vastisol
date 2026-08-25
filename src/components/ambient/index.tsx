@@ -6,9 +6,14 @@ export { Constellation };
 /**
  * Soft brand-coloured blobs drifting behind content.
  *
- * Heavily blurred radial gradients at low opacity — they give the flat
- * background depth and colour without competing with type. Two blobs on
- * opposing drift cycles so the field never looks like it is repeating.
+ * Two large radial gradients at low opacity, on opposing drift cycles so the
+ * field never looks like it repeats.
+ *
+ * PERFORMANCE: these deliberately carry no `blur()` filter. A blurred layer
+ * has to be re-rastered as it animates, and at this size (45rem) an audit
+ * measured that dominating idle main-thread cost. A radial gradient with a
+ * gentle falloff is already soft — the blur was only re-blurring something
+ * that had no hard edge to begin with. Do not add `blur-*` back here.
  */
 export function Glow({
   className = "",
@@ -17,8 +22,16 @@ export function Glow({
   className?: string;
   onDark?: boolean;
 }) {
-  const teal = onDark ? "rgba(0,126,167,0.30)" : "rgba(0,126,167,0.16)";
-  const navy = onDark ? "rgba(0,52,89,0.45)" : "rgba(0,52,89,0.12)";
+  const teal = onDark ? "rgba(0,126,167,0.34)" : "rgba(0,126,167,0.18)";
+  const navy = onDark ? "rgba(0,52,89,0.5)" : "rgba(0,52,89,0.14)";
+
+  // Multi-stop falloff replaces the blur: the gradient fades out gradually
+  // rather than reaching a defined edge.
+  const soften = (colour: string) =>
+    `radial-gradient(circle closest-side, ${colour} 0%, ${colour.replace(
+      /[\d.]+\)$/,
+      "0.06)",
+    )} 45%, transparent 78%)`;
 
   return (
     <div
@@ -26,17 +39,17 @@ export function Glow({
       className={`pointer-events-none absolute inset-0 overflow-hidden ${className}`}
     >
       <div
-        className="absolute -left-[15%] top-[-20%] h-[45rem] w-[45rem] rounded-full blur-3xl"
+        className="absolute -left-[15%] top-[-20%] h-[45rem] w-[45rem] rounded-full"
         style={{
-          background: `radial-gradient(circle, ${teal} 0%, transparent 68%)`,
+          background: soften(teal),
           animation: "drift-a 26s ease-in-out infinite",
           willChange: "transform",
         }}
       />
       <div
-        className="absolute -right-[12%] bottom-[-25%] h-[38rem] w-[38rem] rounded-full blur-3xl"
+        className="absolute -right-[12%] bottom-[-25%] h-[38rem] w-[38rem] rounded-full"
         style={{
-          background: `radial-gradient(circle, ${navy} 0%, transparent 68%)`,
+          background: soften(navy),
           animation: "drift-b 33s ease-in-out infinite 2s",
           willChange: "transform",
         }}

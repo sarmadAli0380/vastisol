@@ -289,15 +289,10 @@
   }
 }
 
-@keyframes trace-line {
-  0% {
-    stroke-dashoffset: 240;
-  }
-  55%,
-  100% {
-    stroke-dashoffset: 0;
-  }
-}
+/* NOTE: a `trace-line` keyframe animating `stroke-dashoffset` used to live
+   here. stroke-dashoffset is a geometry property, so it forced a layout on
+   every frame — measured at ~60 layouts/second while the page sat idle.
+   Removed. Keep decorative SVG animation to transform and opacity. */
 
 /* Motion is decorative everywhere it is used — switching it off costs
    nothing but a little atmosphere. */

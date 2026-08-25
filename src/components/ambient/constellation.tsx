@@ -6,9 +6,21 @@
  * function. It reads as brand rather than generic "tech particles".
  *
  * Each cluster is one <g> that drifts and rotates as a unit, so the
- * connecting lines stay attached without any per-frame JS. Everything
- * animates on transform/opacity, which the compositor handles on its own
- * thread — no layout, no main-thread cost, no scroll jank.
+ * connecting lines stay attached without any per-frame JS.
+ *
+ * PERFORMANCE — read before adding anything here.
+ *
+ * SVG child elements are not promoted to their own compositor layers the way
+ * an HTML element with `will-change: transform` is. Animating them still costs
+ * main-thread style and paint work every frame, and animating a geometry
+ * property costs a full layout every frame on top of that.
+ *
+ * An earlier version animated `stroke-dashoffset` on every line to trace them
+ * in. That is a geometry property: an audit measured it forcing ~60 layouts
+ * per second — one per frame — and roughly 20% of the main thread consumed
+ * while the page sat idle. It has been removed. Do not animate
+ * stroke-dashoffset, stroke-width, r, cx/cy, x/y or any other geometry
+ * attribute here. Transform on the group, and opacity, are the budget.
  *
  * Coordinates are hand-authored constants (never Math.random) so server
  * and client markup match exactly.
@@ -117,6 +129,9 @@ export function Constellation({
             const [x1, y1] = cluster.nodes[a];
             const [x2, y2] = cluster.nodes[b];
             return (
+              // Static. The lines still move, because the whole cluster
+              // drifts and rotates — that motion is one transform on the <g>
+              // rather than per-line geometry work every frame.
               <line
                 key={ei}
                 x1={x1}
@@ -126,27 +141,32 @@ export function Constellation({
                 stroke={line}
                 strokeWidth="1"
                 strokeOpacity={lineOpacity}
-                strokeDasharray="240"
-                style={{
-                  animation: `trace-line ${16 + ei * 2}s ease-in-out infinite ${ci * 1.5 + ei * 0.4}s`,
-                }}
               />
             );
           })}
 
-          {cluster.nodes.map(([cx, cy], ni) => (
-            <circle
-              key={ni}
-              cx={cx}
-              cy={cy}
-              r={ni === 0 ? 5 : 3.5}
-              fill={line}
-              style={{
-                animation: `pulse-node ${9 + ni * 1.7}s ease-in-out infinite ${ci * 0.8 + ni * 0.5}s`,
-                opacity: nodeOpacity,
-              }}
-            />
-          ))}
+          {cluster.nodes.map(([cx, cy], ni) => {
+            // Only the lead node of each cluster breathes. Animating all of
+            // them meant 60 elements repainting every frame across the four
+            // sections that use this; one per cluster reads the same at a
+            // fifth of the cost, because the cluster is already drifting.
+            const breathes = ni === 0;
+            return (
+              <circle
+                key={ni}
+                cx={cx}
+                cy={cy}
+                r={breathes ? 5 : 3.5}
+                fill={line}
+                style={{
+                  opacity: nodeOpacity,
+                  ...(breathes && {
+                    animation: `pulse-node ${9 + ci * 1.7}s ease-in-out infinite ${ci * 0.8}s`,
+                  }),
+                }}
+              />
+            );
+          })}
         </g>
       ))}
     </svg>

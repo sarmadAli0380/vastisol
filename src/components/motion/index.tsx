@@ -20,10 +20,16 @@ import { Fragment, type ReactNode } from "react";
  * sites: EASE (the curve), the durations below, and MAX_STAGGER (how much of
  * a cascade a heading is allowed).
  *
- * Reduced motion is honoured twice over: <MotionConfig reducedMotion="user">
- * in the root layout strips transforms globally, and each primitive
- * additionally collapses to a plain fade so nothing relies on movement to
- * become readable.
+ * REDUCED MOTION: when the user has asked for less motion, these primitives
+ * render the final state immediately — no transform, and no fade either.
+ *
+ * A previous version still ran a 0.7–0.95s opacity fade in that case, on the
+ * reasoning that a fade is not "motion". That was wrong in the way that
+ * matters: the content was still withheld and still arrived late, which is
+ * the thing the preference exists to avoid. The `prefers-reduced-motion`
+ * block in globals.css does not help here either — it clamps CSS animation
+ * and transition durations, and these animations are driven from JS, so that
+ * rule never applies to them. It has to be handled here.
  */
 
 /**
@@ -128,11 +134,14 @@ export function FadeUp({
 }) {
   const reduce = useReducedMotion();
 
+  // Render as-is: visible, in place, no transition of any kind.
+  if (reduce) return <Tagged tag={as} className={className}>{children}</Tagged>;
+
   return (
     <Tagged
       tag={as}
       className={className}
-      initial={{ opacity: 0, y: reduce ? 0 : y }}
+      initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={VIEWPORT}
       transition={{ duration, delay, ease: EASE }}
@@ -189,8 +198,10 @@ export function StaggerItem({
 }) {
   const reduce = useReducedMotion();
 
+  if (reduce) return <Tagged tag={as} className={className}>{children}</Tagged>;
+
   const variants: Variants = {
-    hidden: { opacity: 0, y: reduce ? 0 : y },
+    hidden: { opacity: 0, y },
     visible: { opacity: 1, y: 0, transition: { duration: 0.9, ease: EASE } },
   };
 
@@ -235,16 +246,10 @@ export function AnimatedText({
 }) {
   const reduce = useReducedMotion();
 
+  // Plain text, visible immediately — not split into words, not faded.
   if (reduce) {
     return (
-      <Tagged
-        tag={as}
-        className={className}
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={VIEWPORT}
-        transition={{ duration: 0.7, delay }}
-      >
+      <Tagged tag={as} className={className}>
         {text}
       </Tagged>
     );
