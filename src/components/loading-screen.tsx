@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { motion, useReducedMotion } from "motion/react";
 
 /**
@@ -183,10 +184,7 @@ export function LoadingScreen() {
             }
             transition={{ duration: 0.65, ease: [0.215, 0.61, 0.355, 1] }}
           >
-            <LoaderMark animate={!reduceMotion && !leaving} />
-            <span className="font-display text-[1.5rem] font-semibold tracking-[-0.03em] text-midnight">
-              Vastisol
-            </span>
+            <LoaderLogo animate={!reduceMotion && !leaving} />
             <span className="sr-only">Loading</span>
           </motion.div>
         </motion.div>
@@ -196,39 +194,26 @@ export function LoadingScreen() {
 }
 
 /**
- * The wordmark's node graph at display size. The whole mark breathes; the
- * three lower nodes light in sequence, which reads as a team assembling —
- * the same idea the site is about.
+ * Official wordmark at display size. It keeps the existing breathing motion
+ * while the status text remains the only screen-reader announcement.
  */
-function LoaderMark({ animate }: { animate: boolean }) {
-  const breathe = animate
-    ? { animation: "breathe 2.6s ease-in-out infinite", willChange: "transform" }
-    : undefined;
-
-  const glow = (index: number) =>
-    animate
-      ? { animation: `node-glow 2.6s ease-in-out infinite ${index * 0.28}s` }
-      : undefined;
-
+function LoaderLogo({ animate }: { animate: boolean }) {
   return (
-    <svg
+    <Image
+      src="/brand/vastisol-wordmark-black.svg"
+      alt=""
       aria-hidden="true"
-      viewBox="0 0 22 22"
-      className="h-16 w-16"
-      fill="none"
-      style={breathe}
-    >
-      <path
-        d="M11 6.4v4.2M11 10.6H4.2v2.8M11 10.6h6.8v2.8M11 10.6v2.8"
-        stroke="#007ea7"
-        strokeWidth="1.1"
-        strokeLinecap="round"
-        opacity="0.45"
-      />
-      <circle cx="11" cy="3.4" r="2.6" fill="#007ea7" />
-      <circle cx="4.2" cy="15.6" r="2.4" fill="#003459" style={glow(0)} />
-      <circle cx="11" cy="15.6" r="2.4" fill="#003459" style={glow(1)} />
-      <circle cx="17.8" cy="15.6" r="2.4" fill="#003459" style={glow(2)} />
-    </svg>
+      width={359}
+      height={91}
+      className="h-auto w-64 sm:w-72"
+      style={
+        animate
+          ? {
+              animation: "breathe 2.6s ease-in-out infinite",
+              willChange: "transform",
+            }
+          : undefined
+      }
+    />
   );
 }
