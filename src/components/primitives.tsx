@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { ComponentProps, ReactNode } from "react";
 
 /** Page gutter + max width. Every section uses this so the grid lines up. */
@@ -105,8 +106,8 @@ export function Index({ n, onDark = false }: { n: number; onDark?: boolean }) {
 }
 
 /**
- * Vastisol wordmark. The mark is the brand's core idea in miniature:
- * one node above, a connected row of three below.
+ * Official VastiSol wordmark. Its descriptive alt text provides the brand
+ * name when the logo is used outside a link with its own accessible label.
  */
 export function Wordmark({
   onDark = false,
@@ -116,32 +117,16 @@ export function Wordmark({
   className?: string;
 }) {
   return (
-    <span className={`inline-flex items-center gap-2.5 ${className}`}>
-      <svg
-        aria-hidden="true"
-        viewBox="0 0 22 22"
-        className="h-[1.4rem] w-[1.4rem] shrink-0"
-        fill="none"
-      >
-        <path
-          d="M11 6.4v4.2M11 10.6H4.2v2.8M11 10.6h6.8v2.8M11 10.6v2.8"
-          stroke={onDark ? "#56c5e8" : "#007ea7"}
-          strokeWidth="1.3"
-          strokeLinecap="round"
-          opacity="0.55"
-        />
-        <circle cx="11" cy="3.4" r="2.6" fill={onDark ? "#56c5e8" : "#007ea7"} />
-        <circle cx="4.2" cy="15.6" r="2.4" fill={onDark ? "#ffffff" : "#003459"} />
-        <circle cx="11" cy="15.6" r="2.4" fill={onDark ? "#ffffff" : "#003459"} />
-        <circle cx="17.8" cy="15.6" r="2.4" fill={onDark ? "#ffffff" : "#003459"} />
-      </svg>
-      <span
-        className={`font-display text-[1.3rem] font-semibold leading-none tracking-[-0.03em] ${
-          onDark ? "text-white" : "text-midnight"
-        }`}
-      >
-        Vastisol
-      </span>
-    </span>
+    <Image
+      src={
+        onDark
+          ? "/brand/vastisol-wordmark-white.svg"
+          : "/brand/vastisol-wordmark-black.svg"
+      }
+      alt="Vastisol"
+      width={359}
+      height={91}
+      className={`h-6 w-auto ${className}`}
+    />
   );
 }
